@@ -1,8 +1,11 @@
 import { FC } from "react";
+import Header from "../components/Shared/Layout/Header/Header";
 
 const Home:FC = () => {
     return (
-        <h1>Home !</h1>
+        <>
+            <Header />
+        </>
     )
 }
 

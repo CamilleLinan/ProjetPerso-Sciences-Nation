@@ -1,0 +1,22 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: grey;
+    margin: -8px;
+    padding: 0 1em;
+    
+    &-logo {
+        width: 200px;
+    }
+    
+    &-nav {
+        & ul {
+            display: flex;
+        }
+
+        & li {
+            margin-left: 30px;
+        }
+    }
+}
