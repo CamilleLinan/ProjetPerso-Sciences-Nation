@@ -1,9 +1,13 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import Header from "../components/Shared/Layout/Header/Header";
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
+import {UserContext} from "../context/userContext"
+
 
 const Home:FC = () => {
+    const {currentUser} = useContext(UserContext);
+    
     return (
         <>
             <Header />
@@ -11,6 +15,7 @@ const Home:FC = () => {
                 title="Sciences Nation"
                 src={banner}
             />
+            {currentUser && "Hello"}
         </>
     )
 }

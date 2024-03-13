@@ -7,12 +7,8 @@ import logo from "../../../../assets/logo_sn.png";
 const Header:FC = () => {
     const [showPopin, setShowPopin] = useState(false);
 
-    const onClose = () => {
-        setShowPopin(false);
-    };
-
-    const handleSignInClick = () => {
-        setShowPopin(true);
+    const handleShowPopin = () => {
+        setShowPopin((showPopin) => !showPopin);
     }
 
     return (
@@ -45,11 +41,11 @@ const Header:FC = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <button onClick={handleSignInClick} className="header-nav-btn">Se connecter</button>
+                        <button onClick={handleShowPopin} className="header-nav-btn">Se connecter</button>
                     </li>
                 </ul>
             </nav>
-            {showPopin && <PopinLogin onClose={onClose} />}
+            {showPopin && <PopinLogin onClose={handleShowPopin} />}
         </header>
     )
 }

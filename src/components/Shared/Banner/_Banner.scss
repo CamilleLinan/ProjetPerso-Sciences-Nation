@@ -7,13 +7,11 @@
 
   &-title {
     position: absolute;
-    z-index: 1;
     color: white;
     font-size: 34px;
   }
 
   &-img {
-    position: relative;
     width: 100%;
     height: 250px;
     object-fit: cover;
