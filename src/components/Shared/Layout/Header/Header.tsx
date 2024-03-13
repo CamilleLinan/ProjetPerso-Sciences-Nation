@@ -45,7 +45,7 @@ const Header:FC = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <button onClick={handleSignInClick}>Sign In</button>
+                        <button onClick={handleSignInClick} className="header-nav-btn">Se connecter</button>
                     </li>
                 </ul>
             </nav>
