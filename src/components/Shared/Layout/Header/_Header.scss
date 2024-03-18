@@ -1,0 +1,33 @@
+.header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    background-color: white;
+    
+    &-logo {
+        width: 200px;
+    }
+    
+    &-nav {
+        & ul {
+            display: flex;
+            align-items: center;
+        }
+
+        & li {
+            margin-left: 30px;
+        }
+
+        &-btn {
+            border: none;
+            padding: 5px 10px;
+        }
+    }
+}
