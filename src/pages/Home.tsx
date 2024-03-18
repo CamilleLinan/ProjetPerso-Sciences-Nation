@@ -3,6 +3,7 @@ import Header from "../components/Shared/Layout/Header/Header";
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
 import {UserContext} from "../context/userContext"
+import DisplayProducts from "../components/DisplayProducts/DisplayProducts";
 
 
 const Home:FC = () => {
@@ -15,7 +16,8 @@ const Home:FC = () => {
                 title="Sciences Nation"
                 src={banner}
             />
-            {currentUser && "Hello"}
+            {/* {currentUser && "Hello"} */}
+            <DisplayProducts />
         </>
     )
 }
