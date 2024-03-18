@@ -20,13 +20,17 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
 
     const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
         try {
-            await signUp(e, lastName, firstName, email, password);
+            const userName = `${lastName} ${firstName}`;
+            await signUp(e, userName, email, password);
             onClose();
         } catch (error) {
             console.log(error)
             if (error instanceof Error) {
                 if (error.message.match("auth/email-already-in-use")) {
-                    setError('Cette adresse mail est déjà utilisée')
+                    setError("Cette adresse mail est déjà utilisée")
+                }
+                if (error.message.match("auth/weak-password")) {
+                    setError("Votre mot de passe doit faire plus de 6 caractères")
                 }
             }
         }
@@ -37,12 +41,17 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
             await signIn(e, email, password);
             onClose();
         } catch (error) {
-            setError("L'email ou le mot de passe est invalide");
+            if (error instanceof Error) {
+                if (error.message.match("auth/invalid-credential")) {
+                    setError("L'email ou le mot de passe est invalide")
+                }
+            }
         }
     }
 
     const handleForm = () => {
         setSignInMode((signInMode) => !signInMode);
+        setError("");
     }
 
     return (

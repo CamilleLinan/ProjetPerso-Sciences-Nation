@@ -7,7 +7,7 @@ import {UserContext} from "../context/userContext"
 
 const Home:FC = () => {
     const { currentUser } = useContext(UserContext);
-    console.log(currentUser)
+    console.log('currentUser Home : ', currentUser)
     return (
         <>
             <Header />
