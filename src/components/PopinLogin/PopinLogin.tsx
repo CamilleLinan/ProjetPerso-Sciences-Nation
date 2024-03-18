@@ -24,7 +24,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
             await signUp(e, userName, email, password);
             onClose();
         } catch (error) {
-            console.log(error)
+            console.log(error);
             if (error instanceof Error) {
                 if (error.message.match("auth/email-already-in-use")) {
                     setError("Cette adresse mail est déjà utilisée")
@@ -41,6 +41,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
             await signIn(e, email, password);
             onClose();
         } catch (error) {
+            console.log(error);
             if (error instanceof Error) {
                 if (error.message.match("auth/invalid-credential")) {
                     setError("L'email ou le mot de passe est invalide")
@@ -71,7 +72,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                             placeholder="Nom"
                             className="popin-content-form-input"
                             value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
+                            onChange={(e) => setLastName(e.target.value.trim())}
                             required
                         />
                         <input
@@ -79,7 +80,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                             placeholder="Prénom"
                             className="popin-content-form-input"
                             value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
+                            onChange={(e) => setFirstName(e.target.value.trim())}
                             required
                         />
                     </> }
@@ -88,7 +89,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                         placeholder="Email"
                         className="popin-content-form-input"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value.trim())}
                         required
                     />
                     <input
@@ -96,7 +97,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                         placeholder="Mot de passe"
                         className="popin-content-form-input"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setPassword(e.target.value.trim())}
                         required
                     />
 
