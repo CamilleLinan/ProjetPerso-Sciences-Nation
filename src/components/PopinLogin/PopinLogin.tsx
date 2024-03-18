@@ -10,33 +10,31 @@ interface PopinLoginProps {
 
 const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
     const [ signInMode, setSignInMode ] = useState(true);
+    const [ firstName, setFirstName ] = useState("");
+    const [ lastName, setLastName ] = useState("");
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ error, setError ] = useState("");
 
     const { signIn, signUp } = useContext(UserContext);
 
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-    }
-
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-    }
-
-    const handleSignUp = async () => {
+    const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
         try {
-            await signUp(email, password);
+            await signUp(e, lastName, firstName, email, password);
             onClose();
         } catch (error) {
             console.log(error)
-            // setError(error.message);
+            if (error instanceof Error) {
+                if (error.message.match("auth/email-already-in-use")) {
+                    setError('Cette adresse mail est déjà utilisée')
+                }
+            }
         }
     }
 
-    const handleSignIn = async () => {
+    const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
         try {
-            await signIn(email, password);
+            await signIn(e, email, password);
             onClose();
         } catch (error) {
             setError("L'email ou le mot de passe est invalide");
@@ -58,12 +56,30 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                 </header>
 
                 <form className="popin-content-form">
+                    {!signInMode && <>
+                        <input
+                            type="text"
+                            placeholder="Nom"
+                            className="popin-content-form-input"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Prénom"
+                            className="popin-content-form-input"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            required
+                        />
+                    </> }
                     <input
                         type="email"
                         placeholder="Email"
                         className="popin-content-form-input"
                         value={email}
-                        onChange={handleEmailChange}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                     <input
@@ -71,7 +87,7 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                         placeholder="Mot de passe"
                         className="popin-content-form-input"
                         value={password}
-                        onChange={handlePasswordChange}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
 

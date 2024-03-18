@@ -1,11 +1,13 @@
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./_Header.scss";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
+import { UserContext } from "../../../../context/userContext";
 
 const Header:FC = () => {
-    const [showPopin, setShowPopin] = useState(false);
+    const { currentUser, logOut } = useContext(UserContext);
+    const [ showPopin, setShowPopin ] = useState(false);
 
     const handleShowPopin = () => {
         setShowPopin((showPopin) => !showPopin);
@@ -41,7 +43,25 @@ const Header:FC = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <button onClick={handleShowPopin} className="header-nav-btn">Se connecter</button>
+                        {currentUser ? 
+                            <button 
+                            onClick={(e) => logOut(e)} 
+                            className="header-nav-btn"
+                        >
+                            Se déconnecter
+                        </button> 
+                        : <button 
+                        onClick={handleShowPopin} 
+                        className="header-nav-btn"
+                    >
+                        Se connecter
+                    </button>}
+                        {/* <button 
+                            onClick={currentUser ? logOut() : handleShowPopin} 
+                            className="header-nav-btn"
+                        >
+                            {currentUser ? "Se déconnecter" : "Se connecter"}
+                        </button> */}
                     </li>
                 </ul>
             </nav>

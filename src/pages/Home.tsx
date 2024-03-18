@@ -6,8 +6,8 @@ import {UserContext} from "../context/userContext"
 
 
 const Home:FC = () => {
-    const {currentUser} = useContext(UserContext);
-    
+    const { currentUser } = useContext(UserContext);
+    console.log(currentUser)
     return (
         <>
             <Header />
