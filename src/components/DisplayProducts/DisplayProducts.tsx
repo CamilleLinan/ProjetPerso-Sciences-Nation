@@ -5,6 +5,7 @@ import ProductsService from "../../services/products.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
+import ButtonAddToCart from "../Shared/ButtonAddToCart/ButtonAddToCard";
 
 const DisplayProducts:FC = () => {
     const [ productsData, setProductsData ] = useState<Product[]>([]);
@@ -35,6 +36,7 @@ const DisplayProducts:FC = () => {
                             <FontAwesomeIcon icon={faHeartRegular} />
                         </div>
                         <h4 className="products-item-price">{product.price} $</h4>
+                        <ButtonAddToCart />
                     </article>
                 ))}
             </div>

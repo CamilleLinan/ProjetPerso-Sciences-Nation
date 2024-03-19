@@ -1,0 +1,13 @@
+.btn-link {
+    cursor: pointer;
+    transition: all 2ms ease-in-out;
+    color: white;
+    background-color: red;
+    border: 1px solid red;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: rgb(210, 0, 0);
+        border-color: rgb(210, 0, 0);
+    }
+}

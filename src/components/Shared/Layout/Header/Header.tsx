@@ -4,6 +4,7 @@ import "./_Header.scss";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
+import ButtonLink from "../../ButtonLink/ButtonLink";
 
 const Header:FC = () => {
     const { currentUser, logOut } = useContext(UserContext);
@@ -43,25 +44,17 @@ const Header:FC = () => {
                         </NavLink>
                     </li>
                     <li>
-                        {currentUser ? 
-                            <button 
-                            onClick={(e) => logOut(e)} 
-                            className="header-nav-btn"
-                        >
-                            Se déconnecter
-                        </button> 
-                        : <button 
-                        onClick={handleShowPopin} 
-                        className="header-nav-btn"
-                    >
-                        Se connecter
-                    </button>}
-                        {/* <button 
-                            onClick={currentUser ? logOut() : handleShowPopin} 
-                            className="header-nav-btn"
-                        >
-                            {currentUser ? "Se déconnecter" : "Se connecter"}
-                        </button> */}
+                        <ButtonLink 
+                            onClick={currentUser ? 
+                                (e: React.MouseEvent<HTMLButtonElement>) => logOut(e) 
+                                : handleShowPopin
+                            }
+                            buttonText={currentUser ? 
+                                "Se déconnecter" 
+                                : "Se connecter"
+                            }
+                            className="header-nav-btn" 
+                        />
                     </li>
                 </ul>
             </nav>

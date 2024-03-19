@@ -3,6 +3,7 @@ import "./_PopinLogin.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { UserContext } from "../../context/userContext";
+import ButtonLink from "../Shared/ButtonLink/ButtonLink";
 
 interface PopinLoginProps {
     onClose: () => void;
@@ -103,15 +104,14 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
 
                     {error && <span className="popin-error">{error}</span>}
                     
-                    <button 
-                        onClick={signInMode ? handleSignIn : handleSignUp}
-                        className="popin-content-form-btn"
-                    >
-                        {signInMode ? 
+                    <ButtonLink 
+                        onClick={signInMode ? handleSignIn : handleSignUp} 
+                        buttonText={signInMode ?  
                             "Se connecter" 
                             : "Créer un compte"
-                        }
-                    </button>
+                        } 
+                        className="popin-content-form-btn"
+                    />
 
                     <span onClick={handleForm} className="popin-content-link">
                         {signInMode ? 
