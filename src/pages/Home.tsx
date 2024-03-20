@@ -1,14 +1,15 @@
 import { FC, useContext } from "react";
+import { UserContext } from "../context/userContext"
 import Header from "../components/Shared/Layout/Header/Header";
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
-import {UserContext} from "../context/userContext"
 import DisplayProducts from "../components/DisplayProducts/DisplayProducts";
 
 
 const Home:FC = () => {
     const { currentUser } = useContext(UserContext);
-    console.log('currentUser Home : ', currentUser)
+    console.log('currentUser Home : ', currentUser);
+
     return (
         <>
             <Header />
@@ -16,8 +17,7 @@ const Home:FC = () => {
                 title="Sciences Nation"
                 src={banner}
             />
-            {/* {currentUser && "Hello"} */}
-            <DisplayProducts />
+            <DisplayProducts userId={currentUser?.id}/>
         </>
     )
 }

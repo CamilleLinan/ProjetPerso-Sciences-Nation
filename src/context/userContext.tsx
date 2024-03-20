@@ -34,7 +34,7 @@ const UserContextProvider: FC<ProviderProps> = (props) => {
             e.preventDefault();
             await createUserWithEmailAndPassword(auth, email, password)
                 .then((res) => {
-                    const favCollection = collection(db, "favories");
+                    const favCollection = collection(db, "favorites");
                     const cartCollection = collection(db, "carts");
                     
                     addDoc(favCollection, {user: res.user.uid, products: []})
