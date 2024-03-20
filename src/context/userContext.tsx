@@ -1,6 +1,6 @@
 import { FC, createContext, useEffect, useState } from "react";
 import { User } from "../models/user.model";
-import { auth } from "../../firebase.config";
+import { auth, db } from "../../firebase.config";
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -8,6 +8,7 @@ import {
     signOut, 
     updateProfile 
 } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 
 interface UserData {
     currentUser: User | null,
@@ -33,9 +34,17 @@ const UserContextProvider: FC<ProviderProps> = (props) => {
             e.preventDefault();
             await createUserWithEmailAndPassword(auth, email, password)
                 .then((res) => {
+                    const favCollection = collection(db, "favories");
+                    const cartCollection = collection(db, "carts");
+                    
+                    addDoc(favCollection, {user: res.user.uid, products: []})
+                    addDoc(cartCollection, {user: res.user.uid, products: []})
+                    
                     updateProfile(res.user, {
                         displayName: userName
                     });
+
+                    localStorage.setItem("userId", `${res.user.uid}`);
                 });
         } catch (error) {
             console.error("Sign Up Error:", error);
@@ -47,6 +56,9 @@ const UserContextProvider: FC<ProviderProps> = (props) => {
         try {
             e.preventDefault();
             await signInWithEmailAndPassword(auth, email, password)
+                .then((res) => {
+                    localStorage.setItem("userId", `${res.user.uid}`);
+                })
         } catch (error) {
             console.error("Sign In Error:", error);
             throw error;
@@ -56,9 +68,12 @@ const UserContextProvider: FC<ProviderProps> = (props) => {
     const logOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
         try {
             e.preventDefault();
-            await signOut(auth);
+            await signOut(auth)
+                .then(() => {
+                    localStorage.clear();
+                })
         } catch {
-            alert("Oups. An error occured");
+            alert("Une erreur est apparue lors de la déconnexion");
         }
     }
 

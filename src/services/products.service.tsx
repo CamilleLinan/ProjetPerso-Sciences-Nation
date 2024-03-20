@@ -11,11 +11,11 @@ const getAllProducts = async (): Promise<Product[]> => {
         querySnapshot.forEach((doc) => {
             const productData = doc.data();
             const product: Product = {
+                id: doc.id,
                 title: productData.title,
                 description: productData.description,
                 price: productData.price,
-                imageUrl: productData.imageUrl,
-                isLiked: productData.isLiked
+                imageUrl: productData.imageUrl
             };
             allProducts.push(product);
         });
