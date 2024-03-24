@@ -1,5 +1,5 @@
 import { db } from "../../firebase.config";
-import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { Favorite } from "../models/favorite.model";
 
 const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]> => {
@@ -22,7 +22,7 @@ const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]>
 
         return allFavorites;
     } catch (error) {
-        console.log('Erreur lors de la récupération des données :', error);
+        console.log('Erreur lors de la récupération des favoris');
         throw error;
     }
 }
@@ -31,12 +31,7 @@ const addProductToFavorites = async (userId: string | undefined, productId: stri
     try {
         const favorites = await getUserFavorites(userId);
 
-        if (favorites.length === 0) {
-            await addDoc(collection(db, 'favorites'), {
-                userId: userId,
-                productsId: [productId]
-            });
-        } else {
+        if (favorites) {
             const favoriteDocId = favorites[0].id;
             const favoriteDocRef = doc(db, 'favorites', favoriteDocId);
             const alreadyLiked = favorites[0].productsId.includes(productId);
@@ -55,7 +50,7 @@ const addProductToFavorites = async (userId: string | undefined, productId: stri
 
         return getUserFavorites(userId);
     } catch (error) {
-        console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
+        console.log('Erreur lors de l\'ajout du produit aux favoris');
         throw error;
     }
 }

@@ -63,18 +63,16 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
             const updatedFavorites = await FavoritesService.addProductToFavorites(userId, productId)
             setFavoritesData(updatedFavorites);
         } catch (error) {
-            console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
             alert('Erreur lors de l\'ajout du produit aux favoris');
         }
     }
 
     const onAddProductToCart = async (productId: string) => {
         try {
-            const cart = await cartService.getUserCart(userId);
-            console.log('productId', productId);
+            const cart = await cartService.addProductToCart(userId, productId);
             console.log('cart', cart);
         } catch (error) {
-            console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
+            alert('Erreur lors de l\'ajout du produit au panier');
         }
     }
 
