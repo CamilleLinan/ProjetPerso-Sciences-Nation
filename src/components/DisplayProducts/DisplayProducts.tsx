@@ -12,11 +12,12 @@ import { Favorite } from "../../models/favorite.model";
 import Loading from "../Shared/Loading/Loading";
 import cartService from "../../services/cart.service";
 
-interface currentUserId {
+interface UserInfos {
     userId: string | undefined,
+    updateCartQty: (newQty: number | undefined) => void
 }
 
-const DisplayProducts:FC<currentUserId> = ({ userId }) => {
+const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
     const [ productsData, setProductsData ] = useState<Product[]>([]);
     const [ favoritesData, setFavoritesData ] = useState<Favorite[]>([]);
@@ -52,9 +53,8 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
         fetchFavorites();
     }, [userId]);
 
-    const favoriteProductsIds: string[] = favoritesData.flatMap(favorite => favorite.productsId);
-
     const isProductLiked = (productId: string) => {
+        const favoriteProductsIds: string[] = favoritesData.flatMap(favorite => favorite.productsId);
         return favoriteProductsIds.includes(productId);
     };
 
@@ -69,8 +69,8 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
 
     const onAddProductToCart = async (productId: string) => {
         try {
-            const cart = await cartService.addProductToCart(userId, productId);
-            console.log('cart', cart);
+            const updatedCart = await cartService.addProductToCart(userId, productId);
+            updateCartQty(updatedCart?.products.length);
         } catch (error) {
             alert('Erreur lors de l\'ajout du produit au panier');
         }

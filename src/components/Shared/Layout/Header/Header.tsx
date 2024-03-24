@@ -6,7 +6,11 @@ import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
 import ButtonLink from "../../ButtonLink/ButtonLink";
 
-const Header:FC = () => {
+interface HeaderProps {
+    cartQty: number;
+}
+
+const Header:FC<HeaderProps> = ({ cartQty }) => {
     const { currentUser, logOut } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
 
@@ -40,7 +44,7 @@ const Header:FC = () => {
                             title="Panier"
                             end to="/cart"
                         >
-                            Panier
+                            Panier ({cartQty})
                         </NavLink>
                     </li>
                     <li>
