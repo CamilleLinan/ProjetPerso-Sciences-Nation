@@ -38,9 +38,21 @@ const Header:FC = () => {
                                 : 'header-nav-link header-nav-link-inactive'
                             )}
                             title="Panier"
-                            end to="/"
+                            end to="/cart"
                         >
                             Panier
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            className={({ isActive }) => (
+                                isActive ? 'header-nav-link header-nav-link-active' 
+                                : 'header-nav-link header-nav-link-inactive'
+                            )}
+                            title="Favoris"
+                            end to="/favorites"
+                        >
+                            Favoris
                         </NavLink>
                     </li>
                     <li>
