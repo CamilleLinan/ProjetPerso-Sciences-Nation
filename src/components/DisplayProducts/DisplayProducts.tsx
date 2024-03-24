@@ -10,6 +10,7 @@ import ButtonAddToCart from "../Shared/ButtonAddToCart/ButtonAddToCard";
 import FavoritesService from "../../services/favorites.service";
 import { Favorite } from "../../models/favorite.model";
 import Loading from "../Shared/Loading/Loading";
+import cartService from "../../services/cart.service";
 
 interface currentUserId {
     userId: string | undefined,
@@ -57,14 +58,23 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
         return favoriteProductsIds.includes(productId);
     };
 
-    const onLikeProduct = async (productId: string) => {
+    const onAddProductToFavorites = async (productId: string) => {
         try {
-            const res = await FavoritesService.addProductToFavorites(userId, productId)
-            const updatedFavorites = res;
+            const updatedFavorites = await FavoritesService.addProductToFavorites(userId, productId)
             setFavoritesData(updatedFavorites);
         } catch (error) {
             console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
             alert('Erreur lors de l\'ajout du produit aux favoris');
+        }
+    }
+
+    const onAddProductToCart = async (productId: string) => {
+        try {
+            const cart = await cartService.getUserCart(userId);
+            console.log('productId', productId);
+            console.log('cart', cart);
+        } catch (error) {
+            console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
         }
     }
 
@@ -78,7 +88,7 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
                         <article key={i} className="products-item">
                             {/* <NavLink to="/"> */}
                                 <img src={product.imageUrl} alt={product.title} className="products-item-img" />
-                                <div className="products-item-container" onClick={() => onLikeProduct(product.id)}>
+                                <div className="products-item-container" onClick={() => onAddProductToFavorites(product.id)}>
                                     <h3 className="products-item-title">{product.title}</h3>
                                     <div className="products-item-icon">
                                         {isProductLiked(product.id) ? (
@@ -94,7 +104,7 @@ const DisplayProducts:FC<currentUserId> = ({ userId }) => {
                                 </div>
                                 <h4 className="products-item-price">{product.price} $</h4>
                             {/* </NavLink> */}
-                            <ButtonAddToCart />
+                            <ButtonAddToCart onClick={() => onAddProductToCart(product.id)} />
                         </article>
                     ))}
                 </> : <> {error} </>}
