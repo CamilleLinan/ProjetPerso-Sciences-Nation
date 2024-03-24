@@ -4,6 +4,7 @@ import Header from "../components/Shared/Layout/Header/Header";
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
 import DisplayProducts from "../components/DisplayProducts/DisplayProducts";
+import Footer from "../components/Shared/Layout/Footer/Footer";
 
 
 const Home:FC = () => {
@@ -18,6 +19,7 @@ const Home:FC = () => {
                 src={banner}
             />
             <DisplayProducts userId={currentUser?.id}/>
+            <Footer />
         </>
     )
 }
