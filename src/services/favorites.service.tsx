@@ -1,7 +1,7 @@
 import { db } from "../../firebase.config";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { Favorite } from "../models/favorite.model";
-    
+
 const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]> => {
     try {
         const favoritesRef = collection(db, 'favorites');
@@ -19,7 +19,7 @@ const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]>
                 allFavorites.push(favorite);
             }
         });
-        console.log('allFavorites', allFavorites);
+
         return allFavorites;
     } catch (error) {
         console.log('Erreur lors de la récupération des données :', error);
@@ -27,4 +27,37 @@ const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]>
     }
 }
 
-export default { getUserFavorites };
+const addProductToFavorites = async (userId: string | undefined, productId: string): Promise<Favorite[]> => {
+    try {
+        const favorites = await getUserFavorites(userId);
+
+        if (favorites.length === 0) {
+            await addDoc(collection(db, 'favorites'), {
+                userId: userId,
+                productsId: [productId]
+            });
+        } else {
+            const favoriteDocId = favorites[0].id;
+            const favoriteDocRef = doc(db, 'favorites', favoriteDocId);
+            const alreadyLiked = favorites[0].productsId.includes(productId);
+
+            if (alreadyLiked) {
+                const updatedProductsId = favorites[0].productsId.filter(id => id !== productId);
+                await updateDoc(favoriteDocRef, {
+                    productsId: updatedProductsId
+                });
+            } else {
+                await updateDoc(favoriteDocRef, {
+                    productsId: [...favorites[0].productsId, productId]
+                });
+            }
+        }
+
+        return getUserFavorites(userId);
+    } catch (error) {
+        console.log('Erreur lors de l\'ajout du produit aux favoris :', error);
+        throw error;
+    }
+}
+
+export default { getUserFavorites, addProductToFavorites };

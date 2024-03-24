@@ -36,6 +36,18 @@
             }
         }
 
+        &-icon {
+            cursor: pointer;
+
+            &-solid {
+                color: red;
+            }
+
+            &:hover svg {
+                color: red;
+            }
+        }
+
         &-title {
             margin: 5px 0;
         }
