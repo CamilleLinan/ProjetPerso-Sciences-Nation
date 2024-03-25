@@ -1,0 +1,20 @@
+.pictograms {
+    margin-top: 5em;
+    display: flex;
+    justify-content: space-around;
+
+    &-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        & svg {
+            color: red;
+            height: 25px;
+        }
+
+        & p {
+            font-style: italic;
+        }
+    }
+}
