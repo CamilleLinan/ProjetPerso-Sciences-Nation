@@ -1,6 +1,6 @@
 import { FC } from "react";
 import "./_Presentation.scss";
-import illustration from "../../assets/illustration.jpg";
+import illustration from "../../../assets/illustration.jpg";
 
 const Presentation:FC = () => {
     return (

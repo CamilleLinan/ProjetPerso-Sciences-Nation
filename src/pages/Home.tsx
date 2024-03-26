@@ -5,9 +5,9 @@ import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
 import DisplayProducts from "../components/HomePage/DisplayProducts/DisplayProducts";
 import Footer from "../components/Shared/Layout/Footer/Footer";
-import Introduction from "../components/Introduction/Introduction";
-import Presentation from "../components/Presentation/Presentation";
-import Pictograms from "../components/Pictograms/Pictograms";
+import Introduction from "../components/HomePage/Introduction/Introduction";
+import Presentation from "../components/HomePage/Presentation/Presentation";
+import Pictograms from "../components/HomePage/Pictograms/Pictograms";
 
 const Home:FC = () => {
     const { currentUser } = useContext(UserContext);
