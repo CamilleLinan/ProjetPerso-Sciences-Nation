@@ -3,7 +3,7 @@ import { UserContext } from "../context/userContext"
 import Header from "../components/Shared/Layout/Header/Header";
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
-import DisplayProducts from "../components/DisplayProducts/DisplayProducts";
+import DisplayProducts from "../components/HomePage/DisplayProducts/DisplayProducts";
 import Footer from "../components/Shared/Layout/Footer/Footer";
 import Introduction from "../components/Introduction/Introduction";
 import Presentation from "../components/Presentation/Presentation";

@@ -1,16 +1,16 @@
 import { FC, useEffect, useState } from "react"
 import "./_DisplayProducts.scss";
-import { Product } from "../../models/product.model";
-import ProductsService from "../../services/products.service";
+import { Product } from "../../../models/product.model";
+import ProductsService from "../../../services/products.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
-import ButtonAddToCart from "../Shared/ButtonAddToCart/ButtonAddToCard";
+import ButtonAddToCart from "../../Shared/ButtonAddToCart/ButtonAddToCard";
 // import { NavLink } from "react-router-dom";
-import FavoritesService from "../../services/favorites.service";
-import { Favorite } from "../../models/favorite.model";
-import Loading from "../Shared/Loading/Loading";
-import cartService from "../../services/cart.service";
+import FavoritesService from "../../../services/favorites.service";
+import { Favorite } from "../../../models/favorite.model";
+import Loading from "../../Shared/Loading/Loading";
+import cartService from "../../../services/cart.service";
 
 interface UserInfos {
     userId: string | undefined,
