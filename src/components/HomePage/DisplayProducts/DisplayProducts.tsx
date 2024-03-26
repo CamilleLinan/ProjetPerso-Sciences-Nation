@@ -11,6 +11,7 @@ import FavoritesService from "../../../services/favorites.service";
 import { Favorite } from "../../../models/favorite.model";
 import Loading from "../../Shared/Loading/Loading";
 import cartService from "../../../services/cart.service";
+import Toaster from "../../Shared/Toaster/Toaster";
 
 interface UserInfos {
     userId: string | undefined,
@@ -19,6 +20,7 @@ interface UserInfos {
 
 const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
+    const [ toaster, setToaster ] = useState<boolean>(false);
     const [ productsData, setProductsData ] = useState<Product[]>([]);
     const [ favoritesData, setFavoritesData ] = useState<Favorite[]>([]);
     const [ error, setError ] = useState<string>("");
@@ -71,12 +73,14 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
         try {
             const updatedCart = await cartService.addProductToCart(userId, productId);
             updateCartQty(updatedCart?.products.length);
+            setToaster(true);
         } catch (error) {
             alert('Erreur lors de l\'ajout du produit au panier');
         }
     }
 
     return (
+        <>
         <section className="products">
             <h2 className="products-title">Nos coups de coeur <FontAwesomeIcon icon={faHeartSolid} /></h2>
             <div className="products-container">
@@ -108,6 +112,8 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
                 </> : <> {error} </>}
             </div>
         </section>
+        { toaster && <Toaster /> }
+        </>
     )
 }
 
