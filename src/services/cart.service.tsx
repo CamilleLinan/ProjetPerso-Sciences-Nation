@@ -2,12 +2,12 @@ import { db } from "../../firebase.config";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { Cart } from "../models/cart.model";
 
-const getUserCart = async (userId: string | undefined): Promise<Cart | null> => {
+const getUserCart = async (userId: string | undefined): Promise<Cart> => {
     try {
         const cartRef = collection(db, 'carts');
         const querySnapshot = await getDocs(cartRef);
 
-        let userCart: Cart | null = null;
+        let userCart: Cart = {id: '', userId: userId || '', products: []};
 
         querySnapshot.forEach((doc) => {
             const cartData = doc.data();

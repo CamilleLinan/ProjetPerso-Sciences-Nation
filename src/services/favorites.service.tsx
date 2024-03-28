@@ -1,11 +1,13 @@
 import { db } from "../../firebase.config";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { Favorite } from "../models/favorite.model";
 
 const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]> => {
     try {
         const favoritesRef = collection(db, 'favorites');
-        const querySnapshot = await getDocs(favoritesRef);
+        const q = query(favoritesRef, where('userId', '==', userId))
+        const querySnapshot = await getDocs(q);
+        console.log(q)
 
         const allFavorites: Favorite[] = [];
         querySnapshot.forEach((doc) => {

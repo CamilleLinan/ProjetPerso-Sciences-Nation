@@ -1,10 +1,15 @@
 import { FC } from "react";
 import './_Toaster.scss';
 
-const Toaster:FC = () => {
+export interface ToasterProps {
+    classProp: string,
+    toasterText: string
+}
+
+const Toaster:FC<ToasterProps> = ({ classProp, toasterText }) => {
     return (
-        <div className="toaster">
-            <span className="toaster-text">Le produit a été ajouté au panier !</span>
+        <div className={`toaster toaster-${classProp}`}>
+            <span className="toaster-text">{toasterText}</span>
         </div>
     )
 }

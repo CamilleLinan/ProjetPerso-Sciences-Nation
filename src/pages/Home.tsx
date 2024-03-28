@@ -27,7 +27,7 @@ const Home:FC = () => {
                 src={banner}
             />
             <Introduction />
-            <DisplayProducts userId={currentUser?.id} updateCartQty={updateCartQty}/>
+            <DisplayProducts userId={currentUser?.id} updateCartQty={updateCartQty} />
             <Presentation />
             <Pictograms />
             <Footer />

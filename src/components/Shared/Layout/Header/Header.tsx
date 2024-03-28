@@ -1,10 +1,12 @@
-import { FC, useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { FC, useContext, useEffect, useState } from "react";
 import "./_Header.scss";
+import { NavLink } from "react-router-dom";
+import ButtonLink from "../../ButtonLink/ButtonLink";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
-import ButtonLink from "../../ButtonLink/ButtonLink";
+import useFetchUserCart from "../../../../hooks/fetchUserCart.hook";
+// import useFetchUserCart from "../../../../hooks/fetchUserCart.hook";
 
 interface HeaderProps {
     cartQty: number;
@@ -13,6 +15,21 @@ interface HeaderProps {
 const Header:FC<HeaderProps> = ({ cartQty }) => {
     const { currentUser, logOut } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
+    const { userCartData } = useFetchUserCart(currentUser?.id);
+    const [ totalQty, setTotalQty ] = useState<string | null>('0');
+    
+    useEffect(() => {
+        if (userCartData && userCartData.products) {
+            const calculatedTotalQty = userCartData.products.reduce(
+                (total, product) => {
+                    return total + product.qty;
+                }, 0);
+
+            setTotalQty(calculatedTotalQty.toString());
+        }
+        const qty = localStorage.getItem('qty');
+        setTotalQty(qty)
+    }, [userCartData]);
 
     const handleShowPopin = () => {
         setShowPopin((showPopin) => !showPopin);
@@ -44,7 +61,7 @@ const Header:FC<HeaderProps> = ({ cartQty }) => {
                             title="Panier"
                             end to="/cart"
                         >
-                            Panier ({cartQty})
+                            Panier ({cartQty ? cartQty : totalQty})
                         </NavLink>
                     </li>
                     <li>

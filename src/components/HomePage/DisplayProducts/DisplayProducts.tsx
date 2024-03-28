@@ -1,17 +1,16 @@
 import { FC, useEffect, useState } from "react"
 import "./_DisplayProducts.scss";
-import { Product } from "../../../models/product.model";
-import ProductsService from "../../../services/products.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
-import ButtonAddToCart from "../../Shared/ButtonAddToCart/ButtonAddToCard";
-// import { NavLink } from "react-router-dom";
-import FavoritesService from "../../../services/favorites.service";
 import { Favorite } from "../../../models/favorite.model";
+import FavoritesService from "../../../services/favorites.service";
+import CartService from "../../../services/cart.service";
 import Loading from "../../Shared/Loading/Loading";
-import cartService from "../../../services/cart.service";
-import Toaster from "../../Shared/Toaster/Toaster";
+import Toaster, { ToasterProps } from "../../Shared/Toaster/Toaster";
+import ButtonAddToCart from "../../Shared/ButtonAddToCart/ButtonAddToCard";
+import useFetchProducts from "../../../hooks/fetchProducts.hook";
+import useFetchUserFavorites from "../../../hooks/fetchUserFavorites.hook";
 
 interface UserInfos {
     userId: string | undefined,
@@ -19,41 +18,21 @@ interface UserInfos {
 }
 
 const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
-    const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ toaster, setToaster ] = useState<boolean>(false);
-    const [ productsData, setProductsData ] = useState<Product[]>([]);
+    const { productsData, errorProductsData, isLoadingProductsData } = useFetchProducts();
+    const { userFavoritesData, errorUserFavoritesData } = useFetchUserFavorites(userId);
     const [ favoritesData, setFavoritesData ] = useState<Favorite[]>([]);
-    const [ error, setError ] = useState<string>("");
+    const [ toaster, setToaster ] = useState<ToasterProps | null>();
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            await ProductsService.getAllProducts()
-                .then((res) => {
-                    if (res.length > 0) {
-                        setProductsData(res);
-                    } else {
-                        setError("Une erreur est survenue lors de la récupération des données, veuillez réessayer plus tard.");
-                    }
-                    setIsLoading(false);
-                })
-                .catch(() => {
-                    setIsLoading(false);
-                    setError("Une erreur est survenue lors de la récupération des données, veuillez réessayer plus tard.");
-                })
-        };
+        setFavoritesData(userFavoritesData);
+    }, [userFavoritesData])
 
-        const fetchFavorites = async () => {
-            try {
-                const favorites = await FavoritesService.getUserFavorites(userId);
-                setFavoritesData(favorites);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchProducts();
-        fetchFavorites();
-    }, [userId]);
+    const showToaster = (success: boolean, text: string) => {
+        setToaster({ classProp: success ? "success" : "error", toasterText: text });
+        setTimeout(() => {
+            setToaster(null);
+        }, 10000);
+    }
 
     const isProductLiked = (productId: string) => {
         const favoriteProductsIds: string[] = favoritesData.flatMap(favorite => favorite.productsId);
@@ -65,17 +44,29 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
             const updatedFavorites = await FavoritesService.addProductToFavorites(userId, productId)
             setFavoritesData(updatedFavorites);
         } catch (error) {
-            alert('Erreur lors de l\'ajout du produit aux favoris');
+            showToaster(false, "Erreur lors de l'ajout aux favoris");
         }
     }
 
     const onAddProductToCart = async (productId: string) => {
         try {
-            const updatedCart = await cartService.addProductToCart(userId, productId);
-            updateCartQty(updatedCart?.products.length);
-            setToaster(true);
+            await CartService.addProductToCart(userId, productId)
+                .then((res) => {
+                    if(res) {
+                        const totalQty = res.products.reduce(
+                            (total, product) => {
+                                return total + product.qty;
+                            }, 0)
+                        localStorage.setItem('qty', totalQty.toString());
+                        updateCartQty(res.products.reduce(
+                            (total, product) => {
+                                return total + product.qty;
+                            }, 0));
+                    }
+                    showToaster(true, "produit ajouté au panier");
+                })
         } catch (error) {
-            alert('Erreur lors de l\'ajout du produit au panier');
+            showToaster(false, "Erreur lors de l'ajout au panier");
         }
     }
 
@@ -83,8 +74,10 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
         <>
         <section className="products">
             <h2 className="products-title">Nos coups de coeur <FontAwesomeIcon icon={faHeartSolid} /></h2>
+            {!userFavoritesData && <p>{errorUserFavoritesData}</p>}
+
             <div className="products-container">
-                {isLoading && <Loading />}
+                {isLoadingProductsData && <Loading />}
                 {productsData.length > 0 ? <>
                     {productsData.map((product, i) => (
                         <article key={i} className="products-item">
@@ -109,10 +102,12 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
                             <ButtonAddToCart onClick={() => onAddProductToCart(product.id)} />
                         </article>
                     ))}
-                </> : <> {error} </>}
+                </> : <> 
+                    {errorProductsData} 
+                </>}
             </div>
         </section>
-        { toaster && <Toaster /> }
+        { toaster && <Toaster classProp={toaster.classProp} toasterText={toaster.toasterText} /> }
         </>
     )
 }
