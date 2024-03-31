@@ -44,7 +44,7 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
             const updatedFavorites = await FavoritesService.addProductToFavorites(userId, productId)
             setFavoritesData(updatedFavorites);
         } catch (error) {
-            showToaster(false, "Erreur lors de l'ajout aux favoris");
+            showToaster(false, "Erreur lors de l'ajout du produit aux favoris");
         }
     }
 
@@ -63,10 +63,10 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
                                 return total + product.qty;
                             }, 0));
                     }
-                    showToaster(true, "produit ajouté au panier");
+                    showToaster(true, "Produit ajouté au panier !");
                 })
         } catch (error) {
-            showToaster(false, "Erreur lors de l'ajout au panier");
+            showToaster(false, "Erreur lors de l'ajout du produit au panier");
         }
     }
 

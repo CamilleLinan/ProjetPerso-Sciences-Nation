@@ -1,23 +1,22 @@
 import { db } from "../../firebase.config";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { Cart } from "../models/cart.model";
 
 const getUserCart = async (userId: string | undefined): Promise<Cart> => {
     try {
-        const cartRef = collection(db, 'carts');
-        const querySnapshot = await getDocs(cartRef);
+        const cartsRef = collection(db, 'carts');
+        const userCartQuery = query(cartsRef, where('userId', '==', userId))
+        const userCartsDocs = await getDocs(userCartQuery);
 
         let userCart: Cart = {id: '', userId: userId || '', products: []};
 
-        querySnapshot.forEach((doc) => {
-            const cartData = doc.data();
-            if (cartData.userId === userId) {
-                userCart = {
-                    id: doc.id,
-                    userId: cartData.userId,
-                    products: cartData.products
-                };
-            }
+        userCartsDocs.forEach((doc) => {
+            const userCartData = doc.data();
+            userCart = {
+                id: doc.id,
+                userId: userCartData.userId,
+                products: userCartData.products
+            };
         })
 
         return userCart;

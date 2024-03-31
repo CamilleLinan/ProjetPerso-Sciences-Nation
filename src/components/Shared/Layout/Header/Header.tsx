@@ -19,16 +19,19 @@ const Header:FC<HeaderProps> = ({ cartQty }) => {
     const [ totalQty, setTotalQty ] = useState<string | null>('0');
     
     useEffect(() => {
-        if (userCartData && userCartData.products) {
+        const qtyInStorage = localStorage.getItem('qty');
+        if (userCartData && userCartData.products.length > 0) {
             const calculatedTotalQty = userCartData.products.reduce(
                 (total, product) => {
                     return total + product.qty;
                 }, 0);
 
             setTotalQty(calculatedTotalQty.toString());
+        } else if (qtyInStorage) {
+            setTotalQty(qtyInStorage)
+        } else {
+            setTotalQty('0');
         }
-        const qty = localStorage.getItem('qty');
-        setTotalQty(qty)
     }, [userCartData]);
 
     const handleShowPopin = () => {

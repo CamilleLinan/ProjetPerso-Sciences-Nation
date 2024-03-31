@@ -5,21 +5,19 @@ import { Favorite } from "../models/favorite.model";
 const getUserFavorites = async (userId: string | undefined): Promise<Favorite[]> => {
     try {
         const favoritesRef = collection(db, 'favorites');
-        const q = query(favoritesRef, where('userId', '==', userId))
-        const querySnapshot = await getDocs(q);
-        console.log(q)
+        const userFavoritesQuery = query(favoritesRef, where('userId', '==', userId))
+        const userFavoritesDocs = await getDocs(userFavoritesQuery);
 
         const allFavorites: Favorite[] = [];
-        querySnapshot.forEach((doc) => {
+
+        userFavoritesDocs.forEach((doc) => {
             const favoriteData = doc.data();
-            if (favoriteData.userId === userId) {
-                const favorite: Favorite = {
-                    id: doc.id,
-                    userId: favoriteData.userId,
-                    productsId: favoriteData.productsId
-                };
-                allFavorites.push(favorite);
-            }
+            const favorite: Favorite = {
+                id: doc.id,
+                userId: favoriteData.userId,
+                productsId: favoriteData.productsId
+            };
+            allFavorites.push(favorite);
         });
 
         return allFavorites;

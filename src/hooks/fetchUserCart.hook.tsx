@@ -13,7 +13,6 @@ const useFetchUserCart = (userId: string | undefined) => {
         const fetchUserCart = async () => {
             try {
                 const userCart = await cartService.getUserCart(userId);
-                console.log('userCart', userCart)
                 if (userCart) {
                     setUserCartData(userCart);
                 }
@@ -26,7 +25,7 @@ const useFetchUserCart = (userId: string | undefined) => {
 
         fetchUserCart();
     }, [userId]);
-    console.log('userCart', userCartData)
+
     return { userCartData, errorUserCartData, isLoadingUserCartData };
 };
 
