@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-// import FavoritesService from '../services/favorites.service';
-// import { Favorite } from '../models/favorite.model';
 import cartService from '../services/cart.service';
 import { Cart } from '../models/cart.model';
 
@@ -8,6 +6,7 @@ const useFetchUserCart = (userId: string | undefined) => {
     const [ userCartData, setUserCartData ] = useState<Cart>();
     const [ errorUserCartData, setErrorUserCartData ] = useState<string>('');
     const [ isLoadingUserCartData, setIsLoadingUserCartData ] = useState<boolean>(true);
+    const [ triggerUpdate, setTriggerUpdate ] = useState<number>(0);
 
     useEffect(() => {
         const fetchUserCart = async () => {
@@ -24,9 +23,13 @@ const useFetchUserCart = (userId: string | undefined) => {
         };
 
         fetchUserCart();
-    }, [userId]);
+    }, [userId, triggerUpdate]);
 
-    return { userCartData, errorUserCartData, isLoadingUserCartData };
+    const updateCart = () => {
+        setTriggerUpdate(prevCounter => prevCounter + 1);
+    }
+
+    return { userCartData, errorUserCartData, isLoadingUserCartData, updateCart };
 };
 
 export default useFetchUserCart;

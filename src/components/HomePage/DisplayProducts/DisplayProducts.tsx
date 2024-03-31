@@ -11,15 +11,16 @@ import Toaster, { ToasterProps } from "../../Shared/Toaster/Toaster";
 import ButtonAddToCart from "../../Shared/ButtonAddToCart/ButtonAddToCard";
 import useFetchProducts from "../../../hooks/fetchProducts.hook";
 import useFetchUserFavorites from "../../../hooks/fetchUserFavorites.hook";
+import useFetchUserCart from "../../../hooks/fetchUserCart.hook";
 
 interface UserInfos {
     userId: string | undefined,
-    updateCartQty: (newQty: number | undefined) => void
 }
 
-const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
+const DisplayProducts:FC<UserInfos> = ({ userId }) => {
     const { productsData, errorProductsData, isLoadingProductsData } = useFetchProducts();
     const { userFavoritesData, errorUserFavoritesData } = useFetchUserFavorites(userId);
+    const { updateCart } = useFetchUserCart(userId);
     const [ favoritesData, setFavoritesData ] = useState<Favorite[]>([]);
     const [ toaster, setToaster ] = useState<ToasterProps | null>();
 
@@ -31,7 +32,7 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
         setToaster({ classProp: success ? "success" : "error", toasterText: text });
         setTimeout(() => {
             setToaster(null);
-        }, 10000);
+        }, 5000);
     }
 
     const isProductLiked = (productId: string) => {
@@ -58,11 +59,8 @@ const DisplayProducts:FC<UserInfos> = ({ userId, updateCartQty }) => {
                                 return total + product.qty;
                             }, 0)
                         localStorage.setItem('qty', totalQty.toString());
-                        updateCartQty(res.products.reduce(
-                            (total, product) => {
-                                return total + product.qty;
-                            }, 0));
                     }
+                    updateCart();
                     showToaster(true, "Produit ajouté au panier !");
                 })
         } catch (error) {

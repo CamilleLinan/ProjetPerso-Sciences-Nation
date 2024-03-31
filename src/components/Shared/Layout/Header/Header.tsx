@@ -5,34 +5,39 @@ import ButtonLink from "../../ButtonLink/ButtonLink";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
-import useFetchUserCart from "../../../../hooks/fetchUserCart.hook";
 // import useFetchUserCart from "../../../../hooks/fetchUserCart.hook";
 
-interface HeaderProps {
-    cartQty: number;
-}
-
-const Header:FC<HeaderProps> = ({ cartQty }) => {
+const Header:FC = () => {
+    const qtyInStorage = localStorage.getItem('qty');
     const { currentUser, logOut } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
-    const { userCartData } = useFetchUserCart(currentUser?.id);
-    const [ totalQty, setTotalQty ] = useState<string | null>('0');
+    const [ totalQty, setTotalQty ] = useState<string | null>(qtyInStorage);
+    // const { userCartData, updateCart } = useFetchUserCart(currentUser?.id);
     
-    useEffect(() => {
-        const qtyInStorage = localStorage.getItem('qty');
-        if (userCartData && userCartData.products.length > 0) {
-            const calculatedTotalQty = userCartData.products.reduce(
-                (total, product) => {
-                    return total + product.qty;
-                }, 0);
+    // useEffect(() => {
+    //     if (userCartData && userCartData.products.length > 0) {
+    //         const calculatedTotalQty = userCartData.products.reduce(
+    //             (total, product) => {
+    //                 return total + product.qty;
+    //             }, 0);
 
-            setTotalQty(calculatedTotalQty.toString());
-        } else if (qtyInStorage) {
+    //         setTotalQty(calculatedTotalQty.toString());
+    //     } else if (qtyInStorage) {
+    //         setTotalQty(qtyInStorage)
+    //     } else {
+    //         setTotalQty('0');
+    //     }
+    //     console.log('qtyInStorage', qtyInStorage);
+    // }, [userCartData, updateCart, qtyInStorage]);
+
+    useEffect(() => {
+        if (qtyInStorage) {
             setTotalQty(qtyInStorage)
         } else {
             setTotalQty('0');
         }
-    }, [userCartData]);
+        console.log('qtyInStorage', qtyInStorage);
+    }, [qtyInStorage]);
 
     const handleShowPopin = () => {
         setShowPopin((showPopin) => !showPopin);
@@ -64,7 +69,7 @@ const Header:FC<HeaderProps> = ({ cartQty }) => {
                             title="Panier"
                             end to="/cart"
                         >
-                            Panier ({cartQty ? cartQty : totalQty})
+                            Panier ({totalQty})
                         </NavLink>
                     </li>
                     <li>
