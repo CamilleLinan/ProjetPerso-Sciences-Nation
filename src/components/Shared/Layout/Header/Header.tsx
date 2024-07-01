@@ -1,43 +1,14 @@
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useState } from "react";
 import "./_Header.scss";
 import { NavLink } from "react-router-dom";
 import ButtonLink from "../../ButtonLink/ButtonLink";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
-// import useFetchUserCart from "../../../../hooks/fetchUserCart.hook";
 
 const Header:FC = () => {
-    const qtyInStorage = localStorage.getItem('qty');
-    const { currentUser, logOut } = useContext(UserContext);
+    const { currentUser, totalCartQty, logOut } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
-    const [ totalQty, setTotalQty ] = useState<string | null>(qtyInStorage);
-    // const { userCartData, updateCart } = useFetchUserCart(currentUser?.id);
-    
-    // useEffect(() => {
-    //     if (userCartData && userCartData.products.length > 0) {
-    //         const calculatedTotalQty = userCartData.products.reduce(
-    //             (total, product) => {
-    //                 return total + product.qty;
-    //             }, 0);
-
-    //         setTotalQty(calculatedTotalQty.toString());
-    //     } else if (qtyInStorage) {
-    //         setTotalQty(qtyInStorage)
-    //     } else {
-    //         setTotalQty('0');
-    //     }
-    //     console.log('qtyInStorage', qtyInStorage);
-    // }, [userCartData, updateCart, qtyInStorage]);
-
-    useEffect(() => {
-        if (qtyInStorage) {
-            setTotalQty(qtyInStorage)
-        } else {
-            setTotalQty('0');
-        }
-        console.log('qtyInStorage', qtyInStorage);
-    }, [qtyInStorage]);
 
     const handleShowPopin = () => {
         setShowPopin((showPopin) => !showPopin);
@@ -69,7 +40,8 @@ const Header:FC = () => {
                             title="Panier"
                             end to="/cart"
                         >
-                            Panier ({totalQty})
+                            Panier 
+                            ({totalCartQty})
                         </NavLink>
                     </li>
                     <li>

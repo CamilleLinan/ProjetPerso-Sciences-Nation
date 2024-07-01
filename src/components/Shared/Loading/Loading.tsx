@@ -1,8 +1,11 @@
 import { FC } from "react";
+import "./_Loading.scss";
 
 const Loading:FC = () => {
     return (
-        <>Chargement...</>
+        <div className="spinner-container">
+            <div className="spinner"></div>
+        </div>
     )
 };
 

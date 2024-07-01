@@ -6,7 +6,6 @@ const useFetchUserCart = (userId: string | undefined) => {
     const [ userCartData, setUserCartData ] = useState<Cart>();
     const [ errorUserCartData, setErrorUserCartData ] = useState<string>('');
     const [ isLoadingUserCartData, setIsLoadingUserCartData ] = useState<boolean>(true);
-    const [ triggerUpdate, setTriggerUpdate ] = useState<number>(0);
 
     useEffect(() => {
         const fetchUserCart = async () => {
@@ -23,13 +22,9 @@ const useFetchUserCart = (userId: string | undefined) => {
         };
 
         fetchUserCart();
-    }, [userId, triggerUpdate]);
+    }, [userId]);
 
-    const updateCart = () => {
-        setTriggerUpdate(prevCounter => prevCounter + 1);
-    }
-
-    return { userCartData, errorUserCartData, isLoadingUserCartData, updateCart };
+    return { userCartData, errorUserCartData, isLoadingUserCartData };
 };
 
 export default useFetchUserCart;
