@@ -1,0 +1,59 @@
+.products {
+    &-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    &-title {
+        margin-top: 30px;
+
+        & svg {
+            width: 25px;
+        }
+    }
+
+    &-item {
+        width: 20%;
+        min-width: 250px;
+        margin: 1em;
+
+        &-img {
+            width: 100%;
+            height: 300px; 
+            object-fit: cover;  
+        }
+
+        &-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            & svg {
+                height: 20px;
+            }
+        }
+
+        &-icon {
+            cursor: pointer;
+
+            &-solid {
+                color: red;
+            }
+
+            &:hover svg {
+                color: red;
+            }
+        }
+
+        &-title {
+            margin: 5px 0;
+        }
+
+        &-price {
+            text-align: right;
+            margin: 0 0 10px 0;
+        }
+    }
+
+}

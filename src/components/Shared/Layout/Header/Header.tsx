@@ -1,12 +1,13 @@
 import { FC, useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
 import "./_Header.scss";
+import { NavLink } from "react-router-dom";
+import ButtonLink from "../../ButtonLink/ButtonLink";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
 import { UserContext } from "../../../../context/userContext";
 
 const Header:FC = () => {
-    const { currentUser, logOut } = useContext(UserContext);
+    const { currentUser, totalCartQty, logOut } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
 
     const handleShowPopin = () => {
@@ -37,31 +38,36 @@ const Header:FC = () => {
                                 : 'header-nav-link header-nav-link-inactive'
                             )}
                             title="Panier"
-                            end to="/"
+                            end to="/cart"
                         >
-                            Panier
+                            Panier 
+                            ({totalCartQty})
                         </NavLink>
                     </li>
                     <li>
-                        {currentUser ? 
-                            <button 
-                            onClick={(e) => logOut(e)} 
-                            className="header-nav-btn"
+                        <NavLink
+                            className={({ isActive }) => (
+                                isActive ? 'header-nav-link header-nav-link-active' 
+                                : 'header-nav-link header-nav-link-inactive'
+                            )}
+                            title="Favoris"
+                            end to="/favorites"
                         >
-                            Se déconnecter
-                        </button> 
-                        : <button 
-                        onClick={handleShowPopin} 
-                        className="header-nav-btn"
-                    >
-                        Se connecter
-                    </button>}
-                        {/* <button 
-                            onClick={currentUser ? logOut() : handleShowPopin} 
-                            className="header-nav-btn"
-                        >
-                            {currentUser ? "Se déconnecter" : "Se connecter"}
-                        </button> */}
+                            Favoris
+                        </NavLink>
+                    </li>
+                    <li>
+                        <ButtonLink 
+                            onClick={currentUser ? 
+                                (e: React.MouseEvent<HTMLButtonElement>) => logOut(e) 
+                                : handleShowPopin
+                            }
+                            buttonText={currentUser ? 
+                                "Se déconnecter" 
+                                : "Se connecter"
+                            }
+                            className="header-nav-btn" 
+                        />
                     </li>
                 </ul>
             </nav>

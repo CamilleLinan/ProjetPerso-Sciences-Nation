@@ -1,0 +1,33 @@
+@keyframes side {
+    0% {
+        transform: translate(-1em);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+.toaster {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    padding: 1em;
+    border-radius: 5px;
+    animation: side 1sc ease-in-out;
+    background-color: white;
+    z-index: 10;
+    
+    &-success {
+        background-color: rgb(31, 169, 0);
+    }
+
+    &-error {
+        background-color: rgb(206, 0, 0);
+    }
+
+    &-close {
+        cursor: pointer;
+        margin-left: 1em;
+    }
+}

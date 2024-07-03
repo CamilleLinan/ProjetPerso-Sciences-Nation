@@ -1,21 +1,25 @@
 import { FC, useContext } from "react";
-import Header from "../components/Shared/Layout/Header/Header";
+import { UserContext } from "../context/userContext"
 import Banner from "../components/Shared/Banner/Banner";
 import banner from "../assets/banner1.jpg";
-import {UserContext} from "../context/userContext"
-
+import DisplayProducts from "../components/HomePage/DisplayProducts/DisplayProducts";
+import Introduction from "../components/HomePage/Introduction/Introduction";
+import Presentation from "../components/HomePage/Presentation/Presentation";
+import Pictograms from "../components/HomePage/Pictograms/Pictograms";
 
 const Home:FC = () => {
     const { currentUser } = useContext(UserContext);
-    console.log('currentUser Home : ', currentUser)
+
     return (
         <>
-            <Header />
             <Banner
                 title="Sciences Nation"
                 src={banner}
             />
-            {currentUser && "Hello"}
+            <Introduction />
+            <DisplayProducts userId={currentUser?.id} />
+            <Presentation />
+            <Pictograms />
         </>
     )
 }

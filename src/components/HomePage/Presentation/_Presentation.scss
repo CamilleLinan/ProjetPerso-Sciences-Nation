@@ -1,0 +1,27 @@
+.presentation {
+    display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+
+    &-container-illustration {
+        display: flex;
+        width: 29%;
+
+        &-img {
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &-container-text {
+        width: 60%;
+
+        & h3:first-child {
+            margin-top: 0;
+        }
+
+        & p:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
