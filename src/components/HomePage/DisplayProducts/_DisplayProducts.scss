@@ -1,3 +1,5 @@
+@import "@scss/variables";
+
 .products {
     &-container {
         display: flex;
@@ -38,11 +40,11 @@
             cursor: pointer;
 
             &-solid {
-                color: red;
+                color: $pryColor;
             }
 
             &:hover svg {
-                color: red;
+                color: $pryColor;
             }
         }
 
