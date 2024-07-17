@@ -2,7 +2,7 @@
 import { FC, useEffect, useState } from "react"
 import "./_DisplayProducts.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../Shared/Loading/Loading";
 import Toaster, { ToasterProps } from "../../Shared/Toaster/Toaster";
 import useFetchProducts from "../../../hooks/fetchProducts.hook";
@@ -38,7 +38,7 @@ const DisplayProducts:FC<UserInfos> = ({ userId }) => {
     return (
         <>
         <section className="products">
-            <h2 className="products-title">Nos coups de coeur <FontAwesomeIcon icon={faHeartSolid} /></h2>
+            <h2 className="products-title">Nos coups de coeur <FontAwesomeIcon icon={faHeart} /></h2>
             {!userFavoritesData && <p>{errorUserFavoritesData}</p>}
 
             <div className="products-container">

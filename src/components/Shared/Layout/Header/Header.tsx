@@ -1,10 +1,14 @@
 import { FC, useContext, useState } from "react";
 import "./_Header.scss";
 import { NavLink } from "react-router-dom";
+import { UserContext } from "../../../../context/userContext";
 import ButtonLink from "../../ButtonLink/ButtonLink";
 import PopinLogin from "../../../PopinLogin/PopinLogin";
 import logo from "../../../../assets/logo_sn.png";
-import { UserContext } from "../../../../context/userContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEarth } from "@fortawesome/free-solid-svg-icons";
+import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Header:FC = () => {
     const { currentUser, totalCartQty, logOut } = useContext(UserContext);
@@ -28,6 +32,7 @@ const Header:FC = () => {
                             title="Accueil"
                             end to="/home"
                         >
+                            <FontAwesomeIcon icon={faEarth} />
                             Accueil
                         </NavLink>
                     </li>
@@ -40,6 +45,7 @@ const Header:FC = () => {
                             title="Panier"
                             end to="/cart"
                         >
+                            <FontAwesomeIcon icon={faBagShopping} />
                             Panier
                             {totalCartQty > 0 && 
                                 <span className="qty">
@@ -57,6 +63,7 @@ const Header:FC = () => {
                             title="Favoris"
                             end to="/favorites"
                         >
+                            <FontAwesomeIcon icon={faHeart} />
                             Favoris
                         </NavLink>
                     </li>

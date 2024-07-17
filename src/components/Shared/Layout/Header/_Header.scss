@@ -24,7 +24,8 @@
         }
 
         & li {
-            margin-left: 30px;
+            margin-left: 70px;
+
             & .qty {
                 position: absolute;
                 right: -25px;
@@ -46,12 +47,20 @@
             position: relative;
             display: flex;
             align-items: center;
+
+            & svg {
+                position: absolute;
+                left: -20px;
+            }
+
             &.cart {
                 margin-right: 20px;
             }
+
             &.active {
                 font-weight: bold;
             }
+
             &.inactive::after {
                 content: '';
                 position: absolute;
@@ -62,6 +71,7 @@
                 background-color: $pryColor;
                 transition: width 0.4s ease, left 0.4s ease;
             }
+
             &.inactive:hover::after {
                 width: 100%;
                 left: 0;
@@ -71,6 +81,7 @@
         &-btn {
             border: none;
             padding: 5px 10px;
+            margin-left: -10px;
         }
     }
 }
