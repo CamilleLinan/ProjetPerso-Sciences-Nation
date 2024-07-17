@@ -1,3 +1,5 @@
+@import "@scss/variables";
+
 .header {
     position: absolute;
     top: 0;
@@ -23,10 +25,47 @@
 
         & li {
             margin-left: 30px;
+            & .qty {
+                position: absolute;
+                right: -25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-left: 3px;
+                font-size: 11px;
+                padding: 2px;
+                width: 17px;
+                height: 16px;
+                background-color: $pryColor;
+                color: white;
+                border-radius: 50%;
+            }
         }
 
-        &-link-active {
-            font-weight: bold;
+        &-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            &.cart {
+                margin-right: 20px;
+            }
+            &.active {
+                font-weight: bold;
+            }
+            &.inactive::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 50%;
+                background-color: $pryColor;
+                transition: width 0.4s ease, left 0.4s ease;
+            }
+            &.inactive:hover::after {
+                width: 100%;
+                left: 0;
+            }
         }
 
         &-btn {

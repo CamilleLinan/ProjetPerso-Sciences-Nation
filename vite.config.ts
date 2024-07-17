@@ -15,5 +15,10 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_FIREBASE_MEASUREMENT_ID': JSON.stringify(env.REACT_APP_FIREBASE_MEASUREMENT_ID),
     },
     plugins: [react()],
+    resolve: {
+      alias: {
+        "@scss": new URL("src/styles", import.meta.url).pathname,
+      },
+    },
   }
 })

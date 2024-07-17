@@ -22,8 +22,8 @@ const Header:FC = () => {
                     <li>
                         <NavLink
                             className={({ isActive }) => (
-                                isActive ? 'header-nav-link header-nav-link-active' 
-                                : 'header-nav-link header-nav-link-inactive'
+                                isActive ? 'header-nav-link active' 
+                                : 'header-nav-link inactive'
                             )}
                             title="Accueil"
                             end to="/home"
@@ -34,21 +34,25 @@ const Header:FC = () => {
                     <li>
                         <NavLink
                             className={({ isActive }) => (
-                                isActive ? 'header-nav-link header-nav-link-active' 
-                                : 'header-nav-link header-nav-link-inactive'
+                                isActive ? `header-nav-link active ${totalCartQty > 0 ? 'cart' : ''}` 
+                                : `header-nav-link inactive ${totalCartQty > 0 ? 'cart' : ''}`
                             )}
                             title="Panier"
                             end to="/cart"
                         >
-                            Panier 
-                            ({totalCartQty})
+                            Panier
+                            {totalCartQty > 0 && 
+                                <span className="qty">
+                                    {totalCartQty}
+                                </span>
+                            }
                         </NavLink>
                     </li>
                     <li>
                         <NavLink
                             className={({ isActive }) => (
-                                isActive ? 'header-nav-link header-nav-link-active' 
-                                : 'header-nav-link header-nav-link-inactive'
+                                isActive ? 'header-nav-link active' 
+                                : 'header-nav-link inactive'
                             )}
                             title="Favoris"
                             end to="/favorites"
