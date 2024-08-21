@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import ProductsService from '../services/products.service';
 import { Product } from '../models/product.model';
+import productService from '../services/product.service';
 
 const useFetchProducts = () => {
     const [ productsData, setProductsData ] = useState<Product[]>([]);
@@ -10,7 +10,7 @@ const useFetchProducts = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const products = await ProductsService.getAllProducts();
+                const products = await productService.getAllProducts();
                 if (products.length > 0) {
                     setProductsData(products);
                 } else {

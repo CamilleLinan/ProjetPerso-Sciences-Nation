@@ -4,7 +4,7 @@ import "./_DisplayCart.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../Shared/Loading/Loading";
-import productsService from "../../../services/products.service";
+import productService from "../../../services/product.service";
 import { ProductCart as ProductCartModel } from "../../../models/productCart.model";
 import useFetchUserCart from "../../../hooks/fetchUserCart.hook";
 import ProductCart from "../ProductCart/ProductCart";
@@ -41,7 +41,7 @@ const DisplayCart:FC<DisplayCartProps> = ({ userId }) => {
         if (userCartData) {
             const fetchProductInfos = async () => {
                 const products = await Promise.all(userCartData.products.map(async (productCart) => {
-                    const productInfo = await productsService.getProductById(productCart.productId);
+                    const productInfo = await productService.getProductById(productCart.productId);
                     return { ...productInfo, quantity: productCart.qty } as ProductCartModel;
                 }));
                 setProductInfos(products);

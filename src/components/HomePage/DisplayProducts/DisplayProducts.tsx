@@ -1,21 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useEffect, useState } from "react"
+import { FC, useContext, useEffect, useState } from "react"
 import "./_DisplayProducts.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../Shared/Loading/Loading";
 import Toaster, { ToasterProps } from "../../Shared/Toaster/Toaster";
 import useFetchProducts from "../../../hooks/fetchProducts.hook";
-import useFetchUserFavorites from "../../../hooks/fetchUserFavorites.hook";
 import Product from "../Product/Product";
+import { UserContext } from "../../../context/userContext";
 
-interface UserInfos {
-    userId: string | undefined,
-}
-
-const DisplayProducts:FC<UserInfos> = ({ userId }) => {
+const DisplayProducts:FC = () => {
     const { productsData, errorProductsData, isLoadingProductsData } = useFetchProducts();
-    const { userFavoritesData, errorUserFavoritesData } = useFetchUserFavorites(userId);
+    const { errorFavorites } = useContext(UserContext);
     const [ toaster, setToaster ] = useState<ToasterProps | null>();
     const [ timer, setTimer ] = useState<NodeJS.Timeout | null>(null);
 
@@ -24,6 +20,7 @@ const DisplayProducts:FC<UserInfos> = ({ userId }) => {
             if (timer) {
                 clearTimeout(timer);
             }
+
             const newTimer = setTimeout(() => {
                 setToaster(null);
             }, 3000);
@@ -39,17 +36,15 @@ const DisplayProducts:FC<UserInfos> = ({ userId }) => {
         <>
         <section className="products">
             <h2 className="products-title">Nos coups de coeur <FontAwesomeIcon icon={faHeart} /></h2>
-            {!userFavoritesData && <p>{errorUserFavoritesData}</p>}
+            {errorFavorites && <p>{errorFavorites}</p>}
 
             <div className="products-container">
                 {isLoadingProductsData && <Loading />}
-                {userId && productsData.length > 0 ? <>
+                {productsData.length > 0 ? <>
                     {productsData.map(product => (
                         <Product
                             key={product.id}
-                            userId={userId}
                             product={product}
-                            favorites={userFavoritesData}
                             showToaster={showToaster}
                         />
                     ))}

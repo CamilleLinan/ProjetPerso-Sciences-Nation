@@ -1,27 +1,24 @@
-import { FC, createContext, useCallback, useEffect, useState } from "react";
-import { User } from "../models/user.model";
-import { auth, db } from "../../firebase.config";
 import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    onAuthStateChanged, 
-    signOut, 
-    updateProfile 
-} from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
-import { Favorite } from "../models/favorite.model";
-import { Cart } from "../models/cart.model";
-import cartService from "../services/cart.service";
-import favoritesService from "../services/favorites.service";
+    FC, 
+    createContext, 
+    useCallback, 
+    useEffect, 
+    useState 
+} from "react";
+import { User } from "../models/user.model";
+import userService from "../services/user.service";
+import useFetchUserFavorites from "../hooks/fetchUserFavorites.hook";
+// import { Cart } from "../models/cart.model";
+// import cartService from "../services/cart.service";
 
 interface UserData {
-    currentUser: User | null,
-    signUp: (e: React.MouseEvent<HTMLButtonElement>, userName: string, email: string, password: string) => Promise<void>,
-    signIn: (e: React.MouseEvent<HTMLButtonElement>, email: string, password: string) => Promise<void>,
-    logOut: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>
-    userFavorites: Favorite[] | [],
-    userCart: Cart | null,
-    totalCartQty: number,
+    currentUser: User | undefined,
+    signIn: (email: string, token: string) => void,
+    logOut: () => void,
+    userFavorites: string[] | [],
+    errorFavorites: string | undefined,
+    // userCart: Cart | null,
+    // totalCartQty: number,
     onAddProductToCart: (productId: string) => Promise<void>,
 }
 
@@ -30,135 +27,106 @@ interface ProviderProps {
 }
 
 export const UserContext = createContext<UserData>({
-    currentUser: null,
-    signUp: async () => {},
+    currentUser: undefined,
     signIn: async () => {},
     logOut: async () => {},
     userFavorites: [],
-    userCart: null,
-    totalCartQty: 0,
+    errorFavorites: "",
+    // userCart: null,
+    // totalCartQty: 0,
     onAddProductToCart: async () => {},
 });
 
+const userIdLocalStorage = localStorage.getItem('userId');
+const tokenLocalStorage = localStorage.getItem('token');
+
 const UserContextProvider: FC<ProviderProps> = (props) => {
-    const signUp = async (e: React.MouseEvent<HTMLButtonElement>, userName: string, email: string, password: string) => {
-        try {
-            e.preventDefault();
-            await createUserWithEmailAndPassword(auth, email, password)
-                .then((res) => {
-                    const favCollection = collection(db, "favorites");
-                    const cartCollection = collection(db, "carts");
-                    
-                    addDoc(favCollection, {user: res.user.uid, products: []})
-                    addDoc(cartCollection, {user: res.user.uid, products: []})
-                    
-                    updateProfile(res.user, {
-                        displayName: userName
-                    });
+    const [ userId, setUserId ] = useState(userIdLocalStorage);
+    const [ token, setToken ] = useState(tokenLocalStorage);
+    const [ currentUser, setCurrentUser ] = useState<User | undefined>();
+    const [ userFavorites, setUserFavorites ] = useState<string[] | []>([]);
+    const [ errorFavorites, setErrorFavorites ] = useState<string>();
+    // const [ userCart, setUserCart ] = useState<Cart | null>(null);
+    // const [ totalCartQty, setTotalCartQty ] = useState<number>(0);
 
-                    localStorage.setItem("userId", `${res.user.uid}`);
-                });
-        } catch (error) {
-            console.error("Sign Up Error:", error);
-            throw error;
-        }
+    const signIn = (userId: string, token: string) => {
+        setUserId(userId);
+        setToken(token);
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token);
     };
 
-    const signIn = async (e: React.MouseEvent<HTMLButtonElement>, email: string, password: string) => {
-        try {
-            e.preventDefault();
-            await signInWithEmailAndPassword(auth, email, password)
-                .then((res) => {
-                    localStorage.setItem("userId", `${res.user.uid}`);
-                })
-        } catch (error) {
-            console.error("Sign In Error:", error);
-            throw error;
-        }
-    };
-
-    const logOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        try {
-            e.preventDefault();
-            await signOut(auth)
-                .then(() => {
-                    localStorage.clear();
-                })
-        } catch {
-            alert("Une erreur est apparue lors de la déconnexion");
-        }
+    const logOut = async () => {
+        localStorage.clear();
+        setUserId(null);
+        setToken(null);
+        window.location.reload();
     }
 
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [userFavorites, setUserFavorites] = useState<Favorite[] | []>([]);
-    const [userCart, setUserCart] = useState<Cart | null>(null);
-    const [totalCartQty, setTotalCartQty] = useState<number>(0);
+    const userIsLoggedIn = !!token;
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userData: User = {
-                    id: user.uid,
-                    email: user.email || "",
-                    userName: user.displayName || "",
-                };
-                setCurrentUser(userData);
+        const fetchUserData = async () => {
+            if (userId) {
+                const userData = await userService.getUserById(userId);
+                setCurrentUser(userData ?? undefined);
+                console.log(userData);
             } else {
-                setCurrentUser(null);
+                return new Error("User not found")
             }
-        });
+        }
 
-        return unsubscribe;
-    }, []);
+        fetchUserData();
+    }, [userId]);
+
+    const { userFavoritesId, errorUserFavoritesData } = useFetchUserFavorites(userId ?? "");
 
     useEffect(() => {
-        const fetchUserFavorites = async () => {
-            const favorites = await favoritesService.getUserFavorites(currentUser?.id);
-            setUserFavorites(favorites);
-        };
+        if (userId) {
+            setUserFavorites(userFavoritesId ?? []);
+            setErrorFavorites(errorUserFavoritesData);
+            console.log('fav context', userFavoritesId);
+        }
 
-        const fetchUserCart = async () => {
-            if (currentUser) {
-                const cart = await cartService.getUserCart(currentUser.id);
-                setUserCart(cart);
-                if (cart) {
-                    const total = cart.products.reduce((sum, product) => sum + product.qty, 0);
-                    setTotalCartQty(total);
-                }
-            }
-        };
+        // const fetchUserCart = async () => {
+        //     if (currentUser) {
+        //         const cart = await cartService.getUserCart(currentUser.id);
+        //         setUserCart(cart);
+        //         if (cart) {
+        //             const total = cart.products.reduce((sum, product) => sum + product.qty, 0);
+        //             setTotalCartQty(total);
+        //         }
+        //     }
+        // };
+    }, [errorUserFavoritesData, userFavoritesId, userId]);
 
+    const onAddProductToCart = useCallback(async () => {
         if (currentUser) {
-            fetchUserFavorites();
-            fetchUserCart();
+            // try {
+            //     const updatedCart = await cartService.addProductToCart(currentUser.id, productId);
+            //     setUserCart(updatedCart);
+            //     setTotalCartQty(prevQty => prevQty + 1);
+            // } catch (error) {
+            //     console.error("Error adding product to cart:", error);
+            // }
         }
     }, [currentUser]);
 
-    const onAddProductToCart = useCallback(async (productId: string) => {
-        if (currentUser) {
-            try {
-                const updatedCart = await cartService.addProductToCart(currentUser.id, productId);
-                setUserCart(updatedCart);
-                setTotalCartQty(prevQty => prevQty + 1);
-            } catch (error) {
-                console.error("Error adding product to cart:", error);
-            }
-        }
-    }, [currentUser]);
+    const contextValue = {
+        currentUser: currentUser,
+        token: token,
+        isLoggedIn: userIsLoggedIn,
+        signIn: signIn,
+        logOut: logOut,
+        userFavorites: userFavorites,
+        errorFavorites: errorFavorites,
+        // userCart: userCart,
+        // totalCartQty: totalCartQty,
+        onAddProductToCart: onAddProductToCart
+    };
 
     return (
-        <UserContext.Provider 
-            value={{ 
-                currentUser, 
-                userFavorites, 
-                userCart, 
-                signIn, 
-                signUp, 
-                logOut, 
-                totalCartQty,
-                onAddProductToCart, 
-            }}
-        >
+        <UserContext.Provider value={contextValue}>
             {props.children}
         </UserContext.Provider>
     );

@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import FavoritesService from '../services/favorites.service';
-import { Favorite } from '../models/favorite.model';
+import { Product } from '../models/product.model';
+import favoriteService from '../services/favorite.service';
 
-const useFetchUserFavorites = (userId: string | undefined) => {
-    const [ userFavoritesData, setUserFavoritesData ] = useState<Favorite[]>([]);
+const useFetchUserFavorites = (userId?: string) => {
+    const [ userFavoritesData, setUserFavoritesData ] = useState<Product[]>([]);
+    const [ userFavoritesId, setUserFavoritesId ] = useState<string[]>([]);
     const [ errorUserFavoritesData, setErrorUserFavoritesData ] = useState<string>('');
     const [ isLoadingUserFavoritesData, setIsLoadingUserFavoritesData ] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchUserFavorites = async () => {
             try {
-                const userFavorites = await FavoritesService.getUserFavorites(userId);
-                if (userFavorites.length > 0) {
-                    setUserFavoritesData(userFavorites);
+                if (userId) {
+                    const userFavorites = await favoriteService.getUserFavorites(userId);
+                    if (userFavorites.length > 0) {
+                        setUserFavoritesData(userFavorites);
+                    }
                 }
             } catch (error) {
                 setErrorUserFavoritesData("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
@@ -20,10 +23,27 @@ const useFetchUserFavorites = (userId: string | undefined) => {
                 setIsLoadingUserFavoritesData(false);
             }
         };
+
+        const fetchUserFavoritesId = async () => {
+            try {
+                if (userId) {
+                    const userFavorites = await favoriteService.getUserFavoritesId(userId);
+                    if (userFavorites.length > 0) {
+                        setUserFavoritesId(userFavorites);
+                    }
+                }
+            } catch (error) {
+                setErrorUserFavoritesData("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
+            } finally {
+                setIsLoadingUserFavoritesData(false);
+            }
+        };
+
         fetchUserFavorites();
+        fetchUserFavoritesId();
     }, [userId]);
     
-    return { userFavoritesData, errorUserFavoritesData, isLoadingUserFavoritesData };
+    return { userFavoritesData, userFavoritesId, errorUserFavoritesData, isLoadingUserFavoritesData };
 };
 
 export default useFetchUserFavorites;
