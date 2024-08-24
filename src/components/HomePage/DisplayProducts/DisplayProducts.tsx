@@ -10,7 +10,9 @@ import Product from "../Product/Product";
 import { UserContext } from "../../../context/userContext";
 
 const DisplayProducts:FC = () => {
-    const { productsData: products, error: productsError, isLoading: productsAreLoading } = useFetchProducts();
+    const { productsData: products, error: productsError, isLoading: productsAreLoading } = useFetchProducts({
+        options: { fetchAll: true }
+    });
     const { errorFavorites } = useContext(UserContext);
     const [ toaster, setToaster ] = useState<ToasterProps | null>();
     const [ timer, setTimer ] = useState<NodeJS.Timeout | null>(null);

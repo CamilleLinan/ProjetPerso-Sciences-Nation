@@ -1,7 +1,7 @@
 import { FC, createContext, useEffect, useState } from "react";
 import { User } from "../models/user.model";
 import userService from "../services/user.service";
-import useFetchUserFavorites from "../hooks/fetchUserFavorites.hook";
+import useFetchFavorites from "../hooks/fetchFavorites.hook";
 import { ProductLS } from "../models/LocalStorage/productLS.model";
 import { UserLS } from "../models/LocalStorage/userLS.model";
 
@@ -70,18 +70,21 @@ const UserContextProvider: FC<ProviderProps> = ({ children }) => {
     }, []);
 
     // Fetch user favorites & cart
-    const { userFavoritesId, error: errorFavoritesId } = useFetchUserFavorites(currentUser?.id ?? "");
+    const { favoritesId, error: errorFavoritesId } = useFetchFavorites({
+        options: {fetchAllId: true},
+        userId: currentUser?.id,
+    });
 
     useEffect(() => {
         if (currentUser?.id) {
-            setUserFavorites(userFavoritesId ?? []);
+            setUserFavorites(favoritesId ?? []);
             setErrorFavorites(errorFavoritesId);
 
             const cart = JSON.parse(localStorage.getItem('cart') || '[]') as ProductLS[];
             setUserCart(cart.length ? cart : []);
         }
 
-    }, [errorFavoritesId, userFavoritesId, currentUser]);
+    }, [favoritesId, errorFavoritesId, currentUser]);
 
     // Update total quantity
     useEffect(() => {

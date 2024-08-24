@@ -5,7 +5,7 @@ const clientHTTP = axios.create({
     baseURL: "http://localhost:5011",
   });
 
-const getUserFavorites = async (userId: string): Promise<Product[] | []> => {
+const getFavorites = async (userId: string): Promise<Product[] | []> => {
     try {
         const response = await clientHTTP.get(`/api/favorite/${userId}/all`);
         return response.data;
@@ -15,7 +15,7 @@ const getUserFavorites = async (userId: string): Promise<Product[] | []> => {
     }
 }
 
-const getUserFavoritesId = async (userId: string): Promise<string[] | []> => {
+const getFavoritesId = async (userId: string): Promise<string[] | []> => {
     try {
         const response = await clientHTTP.get(`/api/favorite/${userId}/all-id`);
         const allFavoritesId = response.data;
@@ -37,4 +37,4 @@ const addOrRemoveProductToFavorites = async (userId: string, productId: string):
     }
 };
 
-export default { getUserFavorites, getUserFavoritesId, addOrRemoveProductToFavorites };
+export default { getFavorites, getFavoritesId, addOrRemoveProductToFavorites };
