@@ -13,7 +13,7 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 const Header:FC = () => {
     const { 
         currentUser, 
-        // totalCartQty, 
+        totalCartQty, 
         logOut 
     } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
@@ -42,20 +42,20 @@ const Header:FC = () => {
                     </li>
                     <li>
                         <NavLink
-                            // className={({ isActive }) => (
-                            //     isActive ? `header-nav-link active ${totalCartQty > 0 ? 'cart' : ''}` 
-                            //     : `header-nav-link inactive ${totalCartQty > 0 ? 'cart' : ''}`
-                            // )}
+                            className={({ isActive }) => (
+                                isActive ? `header-nav-link active ${totalCartQty > 0 ? 'cart' : ''}` 
+                                : `header-nav-link inactive ${totalCartQty > 0 ? 'cart' : ''}`
+                            )}
                             title="Panier"
                             end to="/cart"
                         >
                             <FontAwesomeIcon icon={faBagShopping} />
                             Panier
-                            {/* {totalCartQty > 0 && 
+                            {totalCartQty > 0 && 
                                 <span className="qty">
                                     {totalCartQty}
                                 </span>
-                            } */}
+                            }
                         </NavLink>
                     </li>
                     <li>

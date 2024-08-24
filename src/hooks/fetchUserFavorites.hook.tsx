@@ -5,8 +5,8 @@ import favoriteService from '../services/favorite.service';
 const useFetchUserFavorites = (userId?: string) => {
     const [ userFavoritesData, setUserFavoritesData ] = useState<Product[]>([]);
     const [ userFavoritesId, setUserFavoritesId ] = useState<string[]>([]);
-    const [ errorUserFavoritesData, setErrorUserFavoritesData ] = useState<string>('');
-    const [ isLoadingUserFavoritesData, setIsLoadingUserFavoritesData ] = useState<boolean>(true);
+    const [ error, setError ] = useState<string>('');
+    const [ isLoading, setIsLoading ] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchUserFavorites = async () => {
@@ -18,9 +18,9 @@ const useFetchUserFavorites = (userId?: string) => {
                     }
                 }
             } catch (error) {
-                setErrorUserFavoritesData("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
+                setError("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
             } finally {
-                setIsLoadingUserFavoritesData(false);
+                setIsLoading(false);
             }
         };
 
@@ -33,9 +33,9 @@ const useFetchUserFavorites = (userId?: string) => {
                     }
                 }
             } catch (error) {
-                setErrorUserFavoritesData("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
+                setError("Une erreur est survenue lors de la récupération des favoris, veuillez réessayer plus tard.");
             } finally {
-                setIsLoadingUserFavoritesData(false);
+                setIsLoading(false);
             }
         };
 
@@ -43,7 +43,7 @@ const useFetchUserFavorites = (userId?: string) => {
         fetchUserFavoritesId();
     }, [userId]);
     
-    return { userFavoritesData, userFavoritesId, errorUserFavoritesData, isLoadingUserFavoritesData };
+    return { userFavoritesData, userFavoritesId, error, isLoading };
 };
 
 export default useFetchUserFavorites;

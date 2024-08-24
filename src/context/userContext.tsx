@@ -1,133 +1,128 @@
-import { 
-    FC, 
-    createContext, 
-    useCallback, 
-    useEffect, 
-    useState 
-} from "react";
+import { FC, createContext, useEffect, useState } from "react";
 import { User } from "../models/user.model";
 import userService from "../services/user.service";
 import useFetchUserFavorites from "../hooks/fetchUserFavorites.hook";
-// import { Cart } from "../models/cart.model";
-// import cartService from "../services/cart.service";
+import { ProductLS } from "../models/LocalStorage/productLS.model";
+import { UserLS } from "../models/LocalStorage/userLS.model";
 
 interface UserData {
     currentUser: User | undefined,
     signIn: (email: string, token: string) => void,
     logOut: () => void,
-    userFavorites: string[] | [],
+    userFavorites: string[],
     errorFavorites: string | undefined,
-    // userCart: Cart | null,
-    // totalCartQty: number,
-    onAddProductToCart: (productId: string) => Promise<void>,
+    userCart: ProductLS[],
+    totalCartQty: number,
+    onAddProductToCart: (productId: string) => void,
 }
 
 interface ProviderProps {
     children: React.ReactNode
 }
 
+const userLocalStorage = JSON.parse(localStorage.getItem('user') || 'null') as UserLS | null;
+const tokenLocalStorage = userLocalStorage?.token;
+
+// Creating the UserContext
 export const UserContext = createContext<UserData>({
     currentUser: undefined,
-    signIn: async () => {},
-    logOut: async () => {},
+    signIn: () => {},
+    logOut: () => {},
     userFavorites: [],
     errorFavorites: "",
-    // userCart: null,
-    // totalCartQty: 0,
-    onAddProductToCart: async () => {},
+    userCart: [],
+    totalCartQty: 0,
+    onAddProductToCart: () => {},
 });
 
-const userIdLocalStorage = localStorage.getItem('userId');
-const tokenLocalStorage = localStorage.getItem('token');
-
-const UserContextProvider: FC<ProviderProps> = (props) => {
-    const [ userId, setUserId ] = useState(userIdLocalStorage);
-    const [ token, setToken ] = useState(tokenLocalStorage);
+const UserContextProvider: FC<ProviderProps> = ({ children }) => {
     const [ currentUser, setCurrentUser ] = useState<User | undefined>();
-    const [ userFavorites, setUserFavorites ] = useState<string[] | []>([]);
-    const [ errorFavorites, setErrorFavorites ] = useState<string>();
-    // const [ userCart, setUserCart ] = useState<Cart | null>(null);
-    // const [ totalCartQty, setTotalCartQty ] = useState<number>(0);
+    const [ userFavorites, setUserFavorites ] = useState<string[]>([]);
+    const [ errorFavorites, setErrorFavorites ] = useState<string | undefined>();
+    const [ userCart, setUserCart ] = useState<ProductLS[]>([]);
+    const [ totalCartQty, setTotalCartQty ] = useState<number>(0);
 
-    const signIn = (userId: string, token: string) => {
-        setUserId(userId);
-        setToken(token);
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('token', token);
+    // Function signIn & logOut
+    const signIn = (id: string, token: string) => {
+        const newUser = { id, token };
+        localStorage.setItem('user', JSON.stringify(newUser))
     };
 
     const logOut = async () => {
         localStorage.clear();
-        setUserId(null);
-        setToken(null);
         window.location.reload();
     }
 
-    const userIsLoggedIn = !!token;
+    const userIsLoggedIn = !!tokenLocalStorage;
 
+    // Fetch user data
     useEffect(() => {
         const fetchUserData = async () => {
-            if (userId) {
-                const userData = await userService.getUserById(userId);
+            if (userLocalStorage) {
+                const userData = await userService.getUserById(userLocalStorage.id);
                 setCurrentUser(userData ?? undefined);
-                console.log(userData);
             } else {
                 return new Error("User not found")
             }
         }
 
         fetchUserData();
-    }, [userId]);
+    }, []);
 
-    const { userFavoritesId, errorUserFavoritesData } = useFetchUserFavorites(userId ?? "");
+    // Fetch user favorites & cart
+    const { userFavoritesId, error: errorFavoritesId } = useFetchUserFavorites(currentUser?.id ?? "");
 
     useEffect(() => {
-        if (userId) {
+        if (currentUser?.id) {
             setUserFavorites(userFavoritesId ?? []);
-            setErrorFavorites(errorUserFavoritesData);
-            console.log('fav context', userFavoritesId);
+            setErrorFavorites(errorFavoritesId);
+
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]') as ProductLS[];
+            setUserCart(cart.length ? cart : []);
         }
 
-        // const fetchUserCart = async () => {
-        //     if (currentUser) {
-        //         const cart = await cartService.getUserCart(currentUser.id);
-        //         setUserCart(cart);
-        //         if (cart) {
-        //             const total = cart.products.reduce((sum, product) => sum + product.qty, 0);
-        //             setTotalCartQty(total);
-        //         }
-        //     }
-        // };
-    }, [errorUserFavoritesData, userFavoritesId, userId]);
+    }, [errorFavoritesId, userFavoritesId, currentUser]);
 
-    const onAddProductToCart = useCallback(async () => {
-        if (currentUser) {
-            // try {
-            //     const updatedCart = await cartService.addProductToCart(currentUser.id, productId);
-            //     setUserCart(updatedCart);
-            //     setTotalCartQty(prevQty => prevQty + 1);
-            // } catch (error) {
-            //     console.error("Error adding product to cart:", error);
-            // }
+    // Update total quantity
+    useEffect(() => {
+        const totalQty = userCart.reduce((total, item) => total + item.qty, 0);
+        setTotalCartQty(totalQty);
+    }, [userCart]);
+
+    // Function to add product to cart
+    const onAddProductToCart = (productId: string) => {
+        if (userIsLoggedIn) {
+            const existingProduct = userCart.find(i => i.productId === productId );
+
+            if (existingProduct) {
+                existingProduct.qty += 1;
+            } else {
+                userCart.push({ productId, qty: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(userCart));
+            setUserCart([...userCart]);
+        } else {
+            alert('Vous devez être connecté pour ajouter un produit au panier.');
         }
-    }, [currentUser]);
+    }
 
+    // Context value to be provided
     const contextValue = {
-        currentUser: currentUser,
-        token: token,
-        isLoggedIn: userIsLoggedIn,
-        signIn: signIn,
-        logOut: logOut,
-        userFavorites: userFavorites,
-        errorFavorites: errorFavorites,
-        // userCart: userCart,
-        // totalCartQty: totalCartQty,
-        onAddProductToCart: onAddProductToCart
+        currentUser,
+        userIsLoggedIn,
+        signIn,
+        logOut,
+        userFavorites,
+        errorFavorites,
+        userCart,
+        totalCartQty,
+        onAddProductToCart
     };
 
     return (
         <UserContext.Provider value={contextValue}>
-            {props.children}
+            {children}
         </UserContext.Provider>
     );
 };

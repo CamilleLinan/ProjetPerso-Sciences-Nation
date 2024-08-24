@@ -10,7 +10,7 @@ import Product from "../Product/Product";
 import { UserContext } from "../../../context/userContext";
 
 const DisplayProducts:FC = () => {
-    const { productsData, errorProductsData, isLoadingProductsData } = useFetchProducts();
+    const { productsData: products, error: productsError, isLoading: productsAreLoading } = useFetchProducts();
     const { errorFavorites } = useContext(UserContext);
     const [ toaster, setToaster ] = useState<ToasterProps | null>();
     const [ timer, setTimer ] = useState<NodeJS.Timeout | null>(null);
@@ -39,9 +39,9 @@ const DisplayProducts:FC = () => {
             {errorFavorites && <p>{errorFavorites}</p>}
 
             <div className="products-container">
-                {isLoadingProductsData && <Loading />}
-                {productsData.length > 0 ? <>
-                    {productsData.map(product => (
+                {productsAreLoading && <Loading />}
+                {products.length > 0 ? <>
+                    {products.map(product => (
                         <Product
                             key={product.id}
                             product={product}
@@ -49,7 +49,7 @@ const DisplayProducts:FC = () => {
                         />
                     ))}
                 </> : <> 
-                    {errorProductsData} 
+                    {productsError} 
                 </>}
             </div>
         </section>

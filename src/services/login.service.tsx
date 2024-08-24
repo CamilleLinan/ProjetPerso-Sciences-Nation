@@ -4,19 +4,9 @@ const clientHTTP = axios.create({
   baseURL: "http://localhost:5011",
 });
 
-const signUp = async (
-  firstName: string, 
-  lastName: string, 
-  email: string, 
-  password: string
-) => {
+const signUp = async (firstName: string, lastName: string, email: string, password: string) => {
   try {
-    const res = await clientHTTP.post(`/api/user/create`, {
-      firstName, 
-      lastName, 
-      email, 
-      password
-    });
+    const res = await clientHTTP.post(`/api/user/create`, { firstName, lastName, email, password });
     return res.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -34,10 +24,7 @@ const signUp = async (
 
 const signIn = async (email: string, password: string) => {
   try {
-    const response = await clientHTTP.post(`/api/user/login`, {
-      email: email,
-      password: password,
-    });
+    const response = await clientHTTP.post(`/api/user/login`, { email: email, password: password });
     const data = response.data;
     if (data.body && data.body.token) {
       clientHTTP.defaults.headers.common[

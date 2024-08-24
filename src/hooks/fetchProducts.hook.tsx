@@ -2,31 +2,42 @@ import { useState, useEffect } from 'react';
 import { Product } from '../models/product.model';
 import productService from '../services/product.service';
 
-const useFetchProducts = () => {
+const useFetchProducts = (productId?: string) => {
     const [ productsData, setProductsData ] = useState<Product[]>([]);
-    const [ errorProductsData, setErrorProductsData ] = useState<string>('');
-    const [ isLoadingProductsData, setIsLoadingProductsData ] = useState<boolean>(true);
+    const [ productData, setProductData ] = useState<Product>();
+    const [ error, setError ] = useState<string>('');
+    const [ isLoading, setIsLoading ] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const products = await productService.getAllProducts();
-                if (products.length > 0) {
-                    setProductsData(products);
-                } else {
-                    setErrorProductsData("Une erreur est survenue lors de la récupération des produits, veuillez réessayer plus tard.");
-                }
+                setProductsData(products);
             } catch (error) {
-                setErrorProductsData("Une erreur est survenue lors de la récupération des produits, veuillez réessayer plus tard.");
+                setError("Une erreur est survenue lors de la récupération des produits, veuillez réessayer plus tard.");
             } finally {
-                setIsLoadingProductsData(false);
+                setIsLoading(false);
             }
         };
 
-        fetchProducts();
-    }, []);
+        const fetchProductById = async () => {
+            try {
+                if (productId) {
+                    const product = await productService.getProductById(productId);
+                    setProductData(product);
+                }
+            } catch (error) {
+                setError("Une erreur est survenue lors de la récupération du produit, veuillez réessayer plus tard.");
+            } finally {
+                setIsLoading(false);
+            }
+        }
 
-    return { productsData, errorProductsData, isLoadingProductsData };
+        fetchProducts();
+        fetchProductById();
+    }, [productId]);
+
+    return { productsData, productData, error, isLoading };
 };
 
 export default useFetchProducts;

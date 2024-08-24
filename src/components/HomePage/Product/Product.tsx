@@ -45,9 +45,7 @@ const Product: FC<ProductProps> = ({ product, showToaster }) => {
     const addProductToCart = async (productId: string) => {
         try {
             onAddProductToCart(productId)
-                .then(() => {
-                    showToaster(true, "Produit ajouté au panier !");
-                })
+            showToaster(true, "Produit ajouté au panier !");
         } catch (error) {
             showToaster(false, "Erreur lors de l'ajout du produit au panier");
         }
