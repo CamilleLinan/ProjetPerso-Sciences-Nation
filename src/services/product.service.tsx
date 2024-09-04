@@ -8,8 +8,7 @@ const clientHTTP = axios.create({
 const getAllProducts = async (): Promise<Product[]> => {
     try {
         const response = await clientHTTP.get(`/api/product/all`);
-        const allProducts = response.data;
-        return allProducts;
+        return response.data;
     } catch (error) {
         console.log('Erreur lors de la récupération des données :', error);
         throw error;
@@ -19,8 +18,7 @@ const getAllProducts = async (): Promise<Product[]> => {
 const getProductById = async (productId: string): Promise<Product | undefined> => {
     try {
         const response = await clientHTTP.get(`/api/product/${productId}`);
-        const product = response.data;
-        return product;
+        return response.data;
     } catch (error) {
         console.log('Erreur lors de la récupération du produit :', error);
         throw error;

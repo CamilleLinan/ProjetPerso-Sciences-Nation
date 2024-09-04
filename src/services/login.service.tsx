@@ -6,8 +6,8 @@ const clientHTTP = axios.create({
 
 const signUp = async (firstName: string, lastName: string, email: string, password: string) => {
   try {
-    const res = await clientHTTP.post(`/api/user/create`, { firstName, lastName, email, password });
-    return res.data;
+    const response = await clientHTTP.post(`/api/user/create`, { firstName, lastName, email, password });
+    return response.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
       if (err.response?.status === 404) {

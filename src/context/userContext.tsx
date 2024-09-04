@@ -13,7 +13,9 @@ interface UserData {
     errorFavorites: string | undefined,
     userCart: ProductLS[],
     totalCartQty: number,
-    onAddProductToCart: (productId: string) => void,
+    onAddProduct: (productId: string) => void,
+    onRemoveProduct: (productId: string) => boolean,
+    onDeleteProductFromCart: (productId: string) => void, 
 }
 
 interface ProviderProps {
@@ -32,7 +34,9 @@ export const UserContext = createContext<UserData>({
     errorFavorites: "",
     userCart: [],
     totalCartQty: 0,
-    onAddProductToCart: () => {},
+    onAddProduct: () => {},
+    onRemoveProduct: () => false,
+    onDeleteProductFromCart: () => {},
 });
 
 const UserContextProvider: FC<ProviderProps> = ({ children }) => {
@@ -93,9 +97,9 @@ const UserContextProvider: FC<ProviderProps> = ({ children }) => {
     }, [userCart]);
 
     // Function to add product to cart
-    const onAddProductToCart = (productId: string) => {
+    const onAddProduct = (productId: string) => {
         if (userIsLoggedIn) {
-            const existingProduct = userCart.find(i => i.productId === productId );
+            const existingProduct = userCart.find(i => i.productId === productId);
 
             if (existingProduct) {
                 existingProduct.qty += 1;
@@ -110,6 +114,31 @@ const UserContextProvider: FC<ProviderProps> = ({ children }) => {
         }
     }
 
+    const onRemoveProduct = (productId: string): boolean => {
+        const existingProduct = userCart.find(i => i.productId === productId);
+        if (existingProduct && existingProduct.qty > 1) {
+            existingProduct.qty -= 1;
+    
+            localStorage.setItem('cart', JSON.stringify(userCart));
+            setUserCart([...userCart]);
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const onDeleteProductFromCart = (productId: string) => {
+        const updatedCart = userCart.filter(product => product.productId !== productId);
+
+        if (updatedCart.length === 0) {
+            localStorage.removeItem('cart');
+        } else {
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+        }
+
+        setUserCart(updatedCart);
+    };
+
     // Context value to be provided
     const contextValue = {
         currentUser,
@@ -120,7 +149,9 @@ const UserContextProvider: FC<ProviderProps> = ({ children }) => {
         errorFavorites,
         userCart,
         totalCartQty,
-        onAddProductToCart
+        onAddProduct,
+        onRemoveProduct,
+        onDeleteProductFromCart,
     };
 
     return (

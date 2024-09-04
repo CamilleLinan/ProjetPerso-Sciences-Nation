@@ -1,17 +1,49 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC } from "react";
+import { FC, useState } from "react";
 import "./_ProductCartItem.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-// import { UserContext } from "../../../context/userContext";
-import { ProductCart } from "../../../models/ProductCart.model";
+import { ProductCart } from "../../../models/productCart.model";
 
 interface ProductCartProps {
   product: ProductCart;
-  // showToaster: (success: boolean, text: string) => void;
+  addProduct: (productId: string) => void,
+  removeProduct: (productId: string) => boolean,
+  onDeleteProductFromCart: (productId: string) => void,
+  showToaster: (success: boolean, text: string) => void;
 }
 
-const ProductCartItem: FC<ProductCartProps> = ({ product }) => {
+const ProductCartItem: FC<ProductCartProps> = ({ product, removeProduct, addProduct, onDeleteProductFromCart, showToaster }) => {
+  const [showPopinDelete, setShowPopinDelete] = useState(false);
+
+  const handleQty = (action: string, productId: string) => {
+    try {
+      if (action === "ADD") {
+        addProduct(productId);
+        showToaster(true, "Quantité augmentée !");
+      } else {
+        const isRemoved = removeProduct(productId);
+        if (isRemoved) {
+          showToaster(true, "Quantité diminuée !");
+        } else {
+          setShowPopinDelete(true);
+        }
+      }
+    } catch {
+      showToaster(false, "Une erreur interne est survenue");
+    }
+  }
+
+  const deleteProduct = (productId: string) => {
+    try {
+      onDeleteProductFromCart(productId);
+      setShowPopinDelete(false);
+      showToaster(true, "Produit retiré du panier !");
+    } catch {
+      showToaster(false, "Une erreur interne est survenue");
+    }
+  }
+
   return (
     <>
       <article className="cart-item">
@@ -27,7 +59,7 @@ const ProductCartItem: FC<ProductCartProps> = ({ product }) => {
             <div className="quantity">
               <div
                 className="quantity-btn down"
-                // onClick={() => handleQuantityChange(product.id, -1)}
+                onClick={() => handleQty("REMOVE", product.id)}
               >
                 <FontAwesomeIcon icon={faMinus} />
               </div>
@@ -39,7 +71,7 @@ const ProductCartItem: FC<ProductCartProps> = ({ product }) => {
               />
               <div
                 className="quantity-btn up"
-                // onClick={() => handleQuantityChange(product.id, 1)}
+                onClick={() => handleQty("ADD", product.id)}
               >
                 <FontAwesomeIcon icon={faPlus} />
               </div>
@@ -47,6 +79,17 @@ const ProductCartItem: FC<ProductCartProps> = ({ product }) => {
           </div>
         </div>
       </article>
+      {showPopinDelete && (
+        <div className="popin-delete-container">
+          <div className="popin-delete-dialog">
+            <span>Voulez-vous vraiment retirer cet article du panier ?</span>
+            <div className="popin-delete-btns">
+              <button onClick={() => deleteProduct(product.id)} className="popin-delete-btns-btn">Oui</button>
+              <button onClick={() => setShowPopinDelete(false)} className="popin-delete-btns-btn">Non</button>
+            </div>
+          </div>
+        </div>
+      )}
       <span className="bar"></span>
     </>
   );

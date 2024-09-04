@@ -8,8 +8,7 @@ const clientHTTP = axios.create({
 const getUserById = async (id: string): Promise<User | undefined> => {
   try {
     const response = await clientHTTP.get(`/api/user/${id}`);
-    const data = response.data;
-    return data;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {

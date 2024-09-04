@@ -15,7 +15,7 @@ interface ProductProps {
 }
 
 const Product: FC<ProductProps> = ({ product, showToaster }) => {
-    const { currentUser: user, userFavorites: favoritesId, onAddProductToCart } = useContext(UserContext);
+    const { currentUser: user, userFavorites: favoritesId, onAddProduct } = useContext(UserContext);
     const [ favoritesData, setFavoritesData ] = useState<string[] | undefined>(favoritesId);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const Product: FC<ProductProps> = ({ product, showToaster }) => {
 
     const addProductToCart = async (productId: string) => {
         try {
-            onAddProductToCart(productId)
+            onAddProduct(productId)
             showToaster(true, "Produit ajouté au panier !");
         } catch (error) {
             showToaster(false, "Erreur lors de l'ajout du produit au panier");
@@ -70,7 +70,7 @@ const Product: FC<ProductProps> = ({ product, showToaster }) => {
                     )}
                 </div>
             </div>
-            <h4 className="products-item-price">{product.price} $</h4>
+            <h4 className="products-item-price">{product.price} €</h4>
         <ButtonAddToCart onClick={() => addProductToCart(product.id)} />
     </article>
   );

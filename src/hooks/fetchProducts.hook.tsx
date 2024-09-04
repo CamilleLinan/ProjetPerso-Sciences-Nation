@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../models/product.model';
 import productService from '../services/product.service';
-import { ProductCart } from '../models/ProductCart.model';
+import { ProductCart } from '../models/productCart.model';
 import { ProductLS } from '../models/LocalStorage/productLS.model';
 
 interface UseFetchProductsOptions {
