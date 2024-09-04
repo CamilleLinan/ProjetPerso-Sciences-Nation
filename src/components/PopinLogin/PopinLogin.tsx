@@ -1,9 +1,14 @@
-import { FC, useContext, useState } from "react";
+import { 
+    FC, 
+    useContext, 
+    useState 
+} from "react";
 import "./_PopinLogin.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { UserContext } from "../../context/userContext";
 import ButtonLink from "../Shared/ButtonLink/ButtonLink";
+import loginService from "../../services/login.service";
 
 interface PopinLoginProps {
     onClose: () => void;
@@ -11,44 +16,57 @@ interface PopinLoginProps {
 
 const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
     const [ signInMode, setSignInMode ] = useState(true);
-    const [ firstName, setFirstName ] = useState("");
-    const [ lastName, setLastName ] = useState("");
-    const [ email, setEmail ] = useState("");
-    const [ password, setPassword ] = useState("");
+    const [userForm, setUserForm] = useState({
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: ""
+    });
     const [ error, setError ] = useState("");
 
-    const { signIn, signUp } = useContext(UserContext);
+    const { signIn } = useContext(UserContext);
 
-    const handleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUserForm((prevForm) => ({
+            ...prevForm,
+            [name]: value.trim(),
+        }));
+    };
+
+    const handleSignUp = async (e: React.FormEvent) => {
+        e.preventDefault();
         try {
-            const userName = `${lastName} ${firstName}`;
-            await signUp(e, userName, email, password);
-            onClose();
+            const userData = await loginService.signUp(userForm.firstname, userForm.lastname, userForm.email, userForm.password)
+            if (userData) {
+                setError("");
+                setSignInMode(true);
+                return userData;
+            }
         } catch (error) {
             console.log(error);
             if (error instanceof Error) {
-                if (error.message.match("auth/email-already-in-use")) {
+                if (error.message.match("Email")) {
                     setError("Cette adresse mail est déjà utilisée")
                 }
-                if (error.message.match("auth/weak-password")) {
-                    setError("Votre mot de passe doit faire plus de 6 caractères")
-                }
+                // if (error.message.match("auth/weak-password")) {
+                //     setError("Votre mot de passe doit faire plus de 6 caractères")
+                // }
             }
         }
     }
 
-    const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        try {
-            await signIn(e, email, password);
-            onClose();
-        } catch (error) {
-            console.log(error);
-            if (error instanceof Error) {
-                if (error.message.match("auth/invalid-credential")) {
-                    setError("L'email ou le mot de passe est invalide")
-                }
-            }
-        }
+    const handleSignIn = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await loginService.signIn(userForm.email, userForm.password)
+            .then((res) => {
+                const data = res?.data;
+                signIn(data.id, data.token);
+                onClose();
+            })
+            .catch(() => {
+                console.log(error);
+            })
     }
 
     const handleForm = () => {
@@ -66,46 +84,50 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                     </span>
                 </header>
 
-                <form className="popin-content-form">
+                <form className="popin-content-form" onSubmit={signInMode ? handleSignIn : handleSignUp}>
                     {!signInMode && <>
                         <input
                             type="text"
                             placeholder="Nom"
+                            name="lastname"
                             className="popin-content-form-input"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value.trim())}
+                            value={userForm.lastname}
+                            onChange={(e) => handleInputChange(e)}
                             required
                         />
                         <input
                             type="text"
                             placeholder="Prénom"
+                            name="firstname"
                             className="popin-content-form-input"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value.trim())}
+                            value={userForm.firstname}
+                            onChange={handleInputChange}
                             required
                         />
                     </> }
                     <input
                         type="email"
                         placeholder="Email"
+                        name="email"
                         className="popin-content-form-input"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value.trim())}
+                        value={userForm.email}
+                        onChange={handleInputChange}
                         required
                     />
                     <input
                         type="password"
                         placeholder="Mot de passe"
+                        name="password"
                         className="popin-content-form-input"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value.trim())}
+                        value={userForm.password}
+                        onChange={handleInputChange}
                         required
                     />
 
                     {error && <span className="popin-error">{error}</span>}
                     
                     <ButtonLink 
-                        onClick={signInMode ? handleSignIn : handleSignUp} 
+                        onClick={signInMode ? (e: React.FormEvent) => handleSignIn(e) : (e: React.FormEvent) => handleSignUp(e)} 
                         buttonText={signInMode ?  
                             "Se connecter" 
                             : "Créer un compte"

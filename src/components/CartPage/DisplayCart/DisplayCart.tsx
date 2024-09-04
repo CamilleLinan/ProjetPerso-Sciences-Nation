@@ -1,22 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useEffect, useState } from "react"
+import { FC, useContext, useEffect, useState } from "react"
 import "./_DisplayCart.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
+import { UserContext } from "../../../context/userContext";
 import Loading from "../../Shared/Loading/Loading";
-import productsService from "../../../services/products.service";
-import { ProductCart as ProductCartModel } from "../../../models/productCart.model";
-import useFetchUserCart from "../../../hooks/fetchUserCart.hook";
-import ProductCart from "../ProductCart/ProductCart";
-import { ToasterProps } from "../../Shared/Toaster/Toaster";
+import ProductCartItem from "../ProductCartItem/ProductCartItem";
+import Toaster, { ToasterProps } from "../../Shared/Toaster/Toaster";
+import useFetchProducts from "../../../hooks/fetchProducts.hook";
 
-interface DisplayCartProps {
-    userId: string | undefined
-}
-
-const DisplayCart:FC<DisplayCartProps> = ({ userId }) => {
-    const { userCartData, isLoadingUserCartData, errorUserCartData } = useFetchUserCart(userId);
-    const [ productInfos, setProductInfos ] = useState<ProductCartModel[]>([]);
+const DisplayCart:FC = () => {
+    const { userCart, onAddProduct, onRemoveProduct, onDeleteProductFromCart } = useContext(UserContext);
+    const { productsInfos, isLoading: isLoadingProductInfos, error: errorProductInfos } = useFetchProducts({
+        options: {fetchCartInfos: true},
+        userCart: userCart
+    });
     const [ totalPrice, setTotalPrice ] = useState<string>("");
     const [ toaster, setToaster ] = useState<ToasterProps | null>();
     const [ timer, setTimer ] = useState<NodeJS.Timeout | null>(null);
@@ -38,69 +36,37 @@ const DisplayCart:FC<DisplayCartProps> = ({ userId }) => {
     };
 
     useEffect(() => {
-        if (userCartData) {
-            const fetchProductInfos = async () => {
-                const products = await Promise.all(userCartData.products.map(async (productCart) => {
-                    const productInfo = await productsService.getProductById(productCart.productId);
-                    return { ...productInfo, quantity: productCart.qty } as ProductCartModel;
-                }));
-                setProductInfos(products);
-            };
-
-            fetchProductInfos();
-        }
-    }, [userCartData]);
-
-    useEffect(() => {
-        const totalPrice = productInfos.reduce((acc, product) => acc + product.price * product.quantity, 0);
+        const totalPrice = productsInfos.reduce((acc, product) => acc + product.price * product.quantity, 0);
         setTotalPrice(totalPrice.toFixed(2));
-    }, [productInfos]);
+    }, [productsInfos]);
 
     return (
         <>
         <section className="cart">
             <h2 className="cart-title"><FontAwesomeIcon icon={faBagShopping} /> Votre panier</h2>
             <div className="cart-container">
-                {isLoadingUserCartData && <Loading />}
-                {userCartData && userId ? <>
-                    {productInfos.map((product, i) => ( <>
-                        <ProductCart
+                { isLoadingProductInfos ? (
+                    <Loading />
+                ) : errorProductInfos ? (
+                    <p>{errorProductInfos}</p>
+                ) : userCart && productsInfos.length > 0 ? <>
+                    {productsInfos.map((product, i) => ( <>
+                        <ProductCartItem
                             key={i} 
                             product={product}
+                            addProduct={onAddProduct}
+                            removeProduct={onRemoveProduct}
+                            onDeleteProductFromCart={onDeleteProductFromCart}
                             showToaster={showToaster}
-                            setProductInfos={setProductInfos} 
                         />
-                        {/* <article key={i} className="cart-item">
-                            <img src={product.imageUrl} alt={product.title} className="cart-item-img" />
-                            <div className="cart-item-container">
-                                <h3 className="cart-item-title">{product.title}</h3>
-                                <div>
-                                    <h4 className="cart-item-price">{product.price} €</h4>
-                                    <div className="quantity">
-                                        <div className="quantity-btn down" onClick={() => handleQuantityChange(product.id, -1)}>
-                                            <FontAwesomeIcon icon={faMinus} />
-                                        </div>
-                                        <input 
-                                            type="number"
-                                            className="quantity-input" 
-                                            value={product.quantity}
-                                            readOnly 
-                                        />
-                                        <div className="quantity-btn up" onClick={() => handleQuantityChange(product.id, 1)}>
-                                            <FontAwesomeIcon icon={faPlus} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                        <span className="bar"></span> */}
                     </> ))}
                     <div className="cart-total">Total : {totalPrice} €</div>
                 </> : <> 
-                    {errorUserCartData} 
+                    <p>Votre panier est vide !</p>
                 </>}
             </div>
         </section>
+        { toaster && <Toaster classProp={toaster.classProp} toasterText={toaster.toasterText} /> }
         </>
     )
 }

@@ -11,7 +11,11 @@ import { faBagShopping } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Header:FC = () => {
-    const { currentUser, totalCartQty, logOut } = useContext(UserContext);
+    const { 
+        currentUser, 
+        totalCartQty, 
+        logOut 
+    } = useContext(UserContext);
     const [ showPopin, setShowPopin ] = useState(false);
 
     const handleShowPopin = () => {
@@ -70,7 +74,7 @@ const Header:FC = () => {
                     <li>
                         <ButtonLink 
                             onClick={currentUser ? 
-                                (e: React.MouseEvent<HTMLButtonElement>) => logOut(e) 
+                                logOut
                                 : handleShowPopin
                             }
                             buttonText={currentUser ? 
