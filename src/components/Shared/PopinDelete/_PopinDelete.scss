@@ -1,0 +1,54 @@
+.popin-delete {
+    &-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    &-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 1em 0;
+        display: flex;
+        flex-direction: column;
+        z-index: 100;
+        box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.169);
+        
+        & .bar {
+            opacity: 0.4;
+            height: 0.5px;
+        }
+    }
+
+    &-header {
+        margin: 0 1em;
+        &-title {
+            margin-top: 0;
+            margin-bottom: 0.9em;
+            & svg {
+                color: red;
+                margin-right: 0.5em;
+            }
+        }
+    }
+
+    &-body {
+        margin: 1em;
+    }
+
+    &-footer {
+        margin: 1em 1em 0 1em;
+        display: flex;
+        justify-content: end;
+        &-btn {
+            // margin: 0 5em;
+            padding: 2px 20px;
+        }
+    }
+}

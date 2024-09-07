@@ -1,23 +1,35 @@
 @import "@scss/variables";
 
-body {
+// html {
+//     position: relative;
+//     // min-height: 100%;
+// }
+
+html, body {
+    // position: relative;
     font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
 }
 
 #root {
-    margin: -8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-html {
-    position: relative;
-    min-height: 100%;
-    margin: auto;
-    max-width: 1440px;
+main {
+    flex-grow: 1;
 }
 
 section {
     width: 90%;
-    margin: auto auto 3em auto;
+    margin: 0 auto 3em auto;
 }
 
 ul, li {
@@ -48,4 +60,8 @@ button, a {
         border-color: $sdyColor;
         box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
     }
+}
+
+.bold {
+    font-weight: bold;
 }
