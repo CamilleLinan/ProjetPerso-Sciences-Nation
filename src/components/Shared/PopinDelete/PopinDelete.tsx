@@ -2,6 +2,8 @@ import { FC } from "react";
 import "./_PopinDelete.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import ButtonMain from "../ButtonMain/ButtonMain";
+import ButtonCancel from "../ButtonCancel/ButtonCancel";
 
 interface PopinDeleteProps {
   productId: string;
@@ -23,18 +25,8 @@ const PopinDelete: FC<PopinDeleteProps> = ({
         <span className="bar"></span>
         <div className="popin-delete-body">Voulez-vous vraiment supprimer cet article ?</div>
         <footer className="popin-delete-footer">
-          <button
-            onClick={() => setShowPopinDelete(false)}
-            className="popin-delete-footer-btn"
-          >
-            Annuler
-          </button>
-          <button
-            onClick={() => deleteProduct(productId)}
-            className="popin-delete-footer-btn"
-          >
-            Supprimer
-          </button>
+          <ButtonCancel onClick={() => setShowPopinDelete(false)} text='ANNULER' />
+          <ButtonMain onClick={() => deleteProduct(productId)} text='SUPPRIMER' />
         </footer>
       </div>
     </div>

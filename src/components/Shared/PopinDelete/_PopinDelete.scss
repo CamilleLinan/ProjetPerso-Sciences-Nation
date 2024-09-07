@@ -28,9 +28,11 @@
 
     &-header {
         margin: 0 1em;
+
         &-title {
             margin-top: 0;
             margin-bottom: 0.9em;
+
             & svg {
                 color: red;
                 margin-right: 0.5em;
@@ -46,9 +48,20 @@
         margin: 1em 1em 0 1em;
         display: flex;
         justify-content: end;
-        &-btn {
-            // margin: 0 5em;
-            padding: 2px 20px;
+
+        & .btn-main {
+            background-color: red;
+            color: white;
+            border: none;
+            width: inherit;
+
+            &::before {
+                background-color: white;
+            }
+
+            &:hover {
+                color: red;
+            }
         }
     }
 }

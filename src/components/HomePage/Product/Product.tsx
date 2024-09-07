@@ -1,13 +1,13 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import "./_Product.scss";
 import { Product as ProductDto } from '../../../models/product.model';
-import ButtonAddToCart from '../../Shared/ButtonAddToCart/ButtonAddToCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import favoritesService from '../../../services/favorite.service';
 import { UserContext } from '../../../context/userContext';
 import { NavLink } from 'react-router-dom';
+import ButtonMain from '../../Shared/ButtonMain/ButtonMain';
 
 interface ProductProps {
     product: ProductDto;
@@ -71,7 +71,7 @@ const Product: FC<ProductProps> = ({ product, showToaster }) => {
                 </div>
             </div>
             <h4 className="products-item-price">{product.price} €</h4>
-        <ButtonAddToCart onClick={() => addProductToCart(product.id)} />
+        <ButtonMain onClick={() => addProductToCart(product.id)} text='AJOUTER AU PANIER' />
     </article>
   );
 };

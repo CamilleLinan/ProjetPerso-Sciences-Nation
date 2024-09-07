@@ -1,4 +1,4 @@
-.button-add-cart {
+.btn-main {
     position: relative;
     width: 100%;
     background-color: transparent;
@@ -21,7 +21,7 @@
         bottom: 0;
         left: 0;
         background-color: black;
-        transform: translateX(-100%);
+        transform: translateX(-101%);
         transition: all 1s ease-in-out;
     }
     

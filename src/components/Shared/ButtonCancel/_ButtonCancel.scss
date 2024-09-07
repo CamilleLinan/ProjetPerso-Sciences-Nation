@@ -1,0 +1,12 @@
+.btn-cancel {
+    background-color: transparent;
+    border: none;
+    color: grey;
+    transition: all 250ms ease-in-out;
+    margin-right: 2em;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        color: black;
+    }
+}

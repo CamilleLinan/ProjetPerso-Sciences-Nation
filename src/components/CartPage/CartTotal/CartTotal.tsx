@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import "./_CartTotal.scss";
 import { useNavigate } from 'react-router-dom';
+import ButtonMain from '../../Shared/ButtonMain/ButtonMain';
 
 interface CartTotalProps {
     totalPrice: string;
@@ -26,12 +27,7 @@ const CartTotal: FC<CartTotalProps> = ({ totalPrice }) => {
       <span>{(parseFloat(totalPrice) + parseFloat(deliveryPrice)).toFixed(2)} €</span>
     </div>
 
-    <button
-      className="cart-total-btn-checkout"
-      onClick={() => navigate("/checkout")}
-    >
-      <span>Passer au paiement</span>
-    </button>
+    <ButtonMain onClick={() => navigate("/checkout")} text='PASSER AU PAIEMENT' />
   </div>
   );
 };
