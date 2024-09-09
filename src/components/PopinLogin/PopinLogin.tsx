@@ -49,9 +49,6 @@ const PopinLogin: FC<PopinLoginProps> = ({ onClose }) => {
                 if (error.message.match("Email")) {
                     setError("Cette adresse mail est déjà utilisée")
                 }
-                // if (error.message.match("auth/weak-password")) {
-                //     setError("Votre mot de passe doit faire plus de 6 caractères")
-                // }
             }
         }
     }

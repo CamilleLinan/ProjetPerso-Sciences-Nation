@@ -58,9 +58,6 @@ const ProductCartItem: FC<ProductCartProps> = ({
           <img src={product.img} alt={product.name} className="cart-item-img" />
           <div className="cart-item-infos">
             <h3 className="cart-item-title">{product.name}</h3>
-            <button onClick={() => setShowPopinDelete(true)} className="cart-item-btn-delete">
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
           </div>
         </div>
 
@@ -91,6 +88,12 @@ const ProductCartItem: FC<ProductCartProps> = ({
 
         <div>
           <span  className="cart-item-price bold">{(product.price * product.quantity).toFixed(2)} €</span>
+        </div>
+
+        <div>
+          <button onClick={() => setShowPopinDelete(true)} className="cart-item-btn-delete">
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
         </div>
       </article>
 

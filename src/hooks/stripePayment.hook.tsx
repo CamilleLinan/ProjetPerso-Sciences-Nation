@@ -6,7 +6,7 @@ interface StripePaymentProps {
 }
 
 const useStripePayment = ({ amount }: StripePaymentProps) => {
-    const [ clientSecret, setClientSecret ] = useState<string | null>(null);
+    const [ clientSecret, setClientSecret ] = useState<string>("");
     const [ error, setError ] = useState<string | null>(null);
     const [ isLoading, setIsLoading ] = useState<boolean>(true);
 
@@ -16,7 +16,7 @@ const useStripePayment = ({ amount }: StripePaymentProps) => {
                 const response = await stripeService.createPaymentIntent(amount);
                 setClientSecret(response.clientSecret);
             } catch (err) {
-                setError("Une erreur est survenue lors de la création du PaymentIntent, veuillez réessayer plus tard.");
+                setError("Une erreur est survenue lors de la création du formulaire de paiement, veuillez réessayer plus tard.");
             } finally {
                 setIsLoading(false);
             }

@@ -1,10 +1,6 @@
 @import "@scss/variables";
 
 .header {
-    // position: absolute;
-    // top: 0;
-    // right: 0;
-    // left: 0;
     position: static;
     display: flex;
     justify-content: space-between;
@@ -52,6 +48,7 @@
             & svg {
                 position: absolute;
                 left: -20px;
+                bottom: 2px;
             }
 
             &.cart {

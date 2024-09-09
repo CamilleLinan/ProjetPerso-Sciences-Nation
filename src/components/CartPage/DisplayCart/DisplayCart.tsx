@@ -76,6 +76,7 @@ const DisplayCart: FC = () => {
                     <div>
                         <span>Total</span>
                     </div>
+                    <div></div>
                 </div>
 
                 <span className="bar"></span>
@@ -91,28 +92,6 @@ const DisplayCart: FC = () => {
                   />
                 ))}
               </div>
-              {/* <div className="cart-total">
-                <h3 className="cart-total-title">Résumé de votre commande</h3>
-                <div className="cart-total-amount">
-                  <span>Sous-total:</span> 
-                  <span>{totalPrice} €</span>
-                </div>
-                <div className="cart-total-amount">
-                  <span>Livraison:</span> 
-                  <span>{deliveryPrice} €</span>
-                </div>
-                <div className="cart-total-amount bold">
-                  <span>Total TTC:</span>
-                  <span>{(parseFloat(totalPrice) + parseFloat(deliveryPrice)).toFixed(2)} €</span>
-                </div>
-
-                <button
-                  className="cart-total-btn-checkout"
-                  onClick={() => navigate("/checkout")}
-                >
-                  <span>Passer au paiement</span>
-                </button>
-              </div> */}
               <CartTotal totalPrice={totalPrice} />
             </>
           ) : (

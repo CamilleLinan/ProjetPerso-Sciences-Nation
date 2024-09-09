@@ -1,0 +1,37 @@
+.confirm-payment {
+    &-container {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    &-icon {
+        font-size: 58px;
+
+        &.success {
+            color: rgb(0, 188, 0);
+        }
+
+        &.echec {
+            color: rgb(188, 0, 0);
+        }
+    }
+
+    & h2 {
+        font-size: 36px;
+    }
+
+    & p {
+        margin-top: 0;
+    }
+
+    & a {
+        margin-top: 0.5em;
+        text-decoration: underline;
+    }
+}

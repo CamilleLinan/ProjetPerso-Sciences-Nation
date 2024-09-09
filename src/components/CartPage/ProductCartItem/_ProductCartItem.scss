@@ -1,7 +1,7 @@
 .cart {
     &-item {
         display: grid;
-        grid-template-columns: 3fr 1fr 1fr 1fr;
+        grid-template-columns: 3fr 1fr 1fr 1fr 0.2fr;
         margin-bottom: 1em;
 
         & div:last-child {
@@ -39,13 +39,13 @@
             background: none;
             padding: 0;
             width: fit-content;
-            font-size: 14px;
+            font-size: 16px;
             font-style: italic;
             opacity: 0.5;
             transition: all 250ms ease-in-out;
             &:hover {
                 opacity: 1;
-                color: rgb(179, 1, 1);
+                color: rgb(188, 0, 0);
             }
         }
     }

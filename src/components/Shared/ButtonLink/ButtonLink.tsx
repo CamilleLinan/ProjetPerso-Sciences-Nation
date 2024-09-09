@@ -2,8 +2,7 @@ import { FC } from "react";
 import "./_ButtonLink.scss";
 
 interface ButtonLinkProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onClick: any;
+    onClick: React.MouseEventHandler<HTMLButtonElement>;
     buttonText: string;
     className: string;
   }
